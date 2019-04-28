@@ -45,7 +45,7 @@ function dataListFormat(id,data){
     resultElement += dataList;
     for(var i=0;i<data.length;i++){
         var template1 = '<option data-id="'.concat(
-            data[i].ID,'" value="',data[i].KANJI,'"><span></span></option>'
+            data[i].ID,'" value="',data[i].KANJI,' (',data[i].HIRAGANA,',',data[i].ROMANJI,')"><span></span></option>'
         );
         resultElement += template1;
     }
@@ -57,8 +57,8 @@ function dataListFormat(id,data){
 function groupListFormat(data){
     var resultElement="";
     for(var i=0;i<data.length;i++){
-        var template1 = '<a href="#" class="list-group-item list-group-item-action" onclick="onSelectGroup(this)" data-id="'.concat(
-            data[i].ID,'" >',data[i].group_name,'</a>'
+        var template1 = '<a  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="onSelectGroup(this)" data-id="'.concat(
+            data[i].ID,'" ><span>',data[i].group_name,'</span><span class="badge badge-pill"><i data-id="',data[i].ID,'" class="text-danger font-large fa fa-trash clickable" onclick="deleteGroup(this)"></i></span></a>'
         );
         resultElement += template1;
     }

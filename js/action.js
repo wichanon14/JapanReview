@@ -76,6 +76,28 @@ function deleteWord(id){
     
 }
 
+function deleteGroup(obj){
+    var label = $($($(obj).parent()).parent()).text();
+    if(confirm("Are you sure for delete \""+label+"\" group")){
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "/JapanReview/Service/Action.php",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/json",
+            },
+            "processData": false,
+            "data": "{\"action\":\"deleteGroup\",\"user_id\":\"1\",\"group_id\":\""+$(obj).attr('data-id')+"\"}"
+          }
+          
+          $.ajax(settings).done(function (response) {
+            
+                window.location.reload();
+          });
+    }
+}
+
 function getAllWord(){
     var settings = {
         "async": true,
@@ -94,7 +116,7 @@ function getAllWord(){
       });
 }
 
-function getGroupList(id,user_id){
+function getGroupList(id,user_id,keyword){
     var settings = {
         "async": true,
         "crossDomain": true,
@@ -104,13 +126,21 @@ function getGroupList(id,user_id){
           "Content-Type": "application/json",
         },
         "processData": false,
-        "data": "{\"action\":\"getGroupList\",\"user_id\":\""+user_id+"\"}"
+        "data": "{\"action\":\"getGroupList\",\"user_id\":\""+user_id+"\",\"keyword\":\""+keyword+"\"}"
       }
       
       $.ajax(settings).done(function (response) {
             
             $('#'+id).html(groupListFormat(response));
-
+            for(var i=0;i<response.length;i++){
+                var item = $('#list-group > a')[i];
+                
+                if($(item).attr('data-id')===groupSelect){
+                    
+                    $(item).addClass('active');
+                    
+                }
+            }
       });
 }
 
@@ -173,5 +203,25 @@ function saveGroup(result_label_id,user_id,group_id){
                 $('#'+result_label_id).removeClass('show');
                 $('#'+result_label_id).addClass('hide');
             },3000);
+      });
+}
+
+function searchWord(keyword){
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "/JapanReview/Service/Action.php",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+        },
+        "processData": false,
+        "data": "{\"action\":\"SearchWord\",\"keyword\":\""+keyword+"\"}"
+      }
+      
+      $.ajax(settings).done(function (response) {
+          console.log(response);
+            $('#word-datalist').remove();
+            $('#search').append(dataListFormat('word-datalist',response));
       });
 }

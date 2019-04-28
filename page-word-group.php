@@ -27,7 +27,7 @@
 <body>
     <script>
         var words = [];
-        var groupSelectID = "";
+        var groupSelect = "";
 
         $(document).ready(function () {
 
@@ -43,7 +43,6 @@
                     var check_exist = words.filter(function (val) {
                         return $(optionObj).attr('data-id') === val.data_id;
                     })
-
 
 
                     if (!check_exist.length) {
@@ -125,12 +124,27 @@
             var group_id = $('#save-btn').attr('group-id');
             var user_id = $('#save-btn').attr('user-id');
         
+            if(groupSelect+"" === "0"){    
+                $('#group-manage-addword').removeClass('show');
+                $('#group-manage-addword').addClass('hide');
+            }
+
             saveGroup('result-save',user_id,group_id);
-            getGroupList('list-group',1);
+            getGroupList('list-group',user_id,'');
+            
+        }
+
+        function onSearchGroupList(id,user_id,keyword){
+            getGroupList(id,user_id,keyword);
+            
+        }
+
+        function deleteGroupList(obj){
+            deleteGroup(obj);
         }
 
         getAllWord();
-        getGroupList('list-group',1);
+        getGroupList('list-group',1,'');
     </script>
     <div class="container">
         <div></div>
@@ -141,6 +155,10 @@
                         List Group
                         <i class="fa fa-plus clickable font-large text-primary" onclick="onAddGroup(this)"></i>
                     </h2>
+                </div>
+                <div class="row ml-1 mb-2">
+                    <input class="form-control col-sm-11" type="text" placeholder="Search Group" oninput="onSearchGroupList('list-group',1,this.value)"/>
+
                 </div>
                 <div id="list-group" class="list-group scrollbar-custom" style="height:197px;overflow-y:auto;">
                     <a href="#" class="list-group-item list-group-item-action">
@@ -159,7 +177,7 @@
                 </div>
                 
                 <div class="row">
-                    <input class="form-control col-sm-8" type="text" id="search" list="word-datalist" />
+                    <input class="form-control col-sm-8" type="text" id="search" list="word-datalist" placeholder="Search Word" />
 
                 </div>
                 <div class="row" style="margin-top:150px;">
@@ -169,8 +187,8 @@
                                 <span>
                                     Group Name
                                 </span>
-                                <i class="fa fa-pencil clickable font-large" onclick="editWord('Label')"></i>
-                                <i class="fa fa-save clickable font-large" id="save-btn" onclick="saveGroupOnPage(this)"></i>
+                                <i class="fa fa-pencil clickable font-large text-primary" onclick="editWord('Label')"></i>
+                                <i class="fa fa-save clickable font-large text-primary" id="save-btn" onclick="saveGroupOnPage(this)"></i>
                             </div>
                             <div class="hide edit-Label">
                                 <input type="text" value="Group Name" />

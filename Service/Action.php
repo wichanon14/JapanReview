@@ -22,7 +22,8 @@ if ($conn->connect_error) {
                 $sql = "SELECT * 
                         FROM japanese_review.words 
                         where KANJI like '%{$keyword}%' or 
-                        HIRAGANA like '%{$keyword}%' ";
+                        HIRAGANA like '%{$keyword}%' or
+                        ROMANJI like '%{$keyword}%'";
             
                 $result = $conn->query($sql);
             
@@ -209,7 +210,15 @@ if ($conn->connect_error) {
                 $user_id = $_POST['user_id'];
             }
 
-            $sql = "SELECT * FROM `group_detail` WHERE user_id = {$user_id} ";
+            if(isset($_POST['keyword'])){
+                $keyword = $_POST['keyword'];
+            }else{
+                $keyword = "";
+            }
+
+            $sql = "SELECT * FROM `group_detail` WHERE user_id = {$user_id} 
+            AND LOWER(group_name) like CONCAT('%',LOWER('{$keyword}'),'%') 
+            ORDER BY LOWER(group_name)";
             
             $result = $conn->query($sql);
 
@@ -257,6 +266,28 @@ if ($conn->connect_error) {
             
 
         }
+
+        if($action == "deleteGroup"){
+
+            if(isset($_POST['user_id'])){
+                $user_id = $_POST['user_id'];
+            }
+
+            if(isset($_POST['group_id'])){
+                $group_id = $_POST['group_id'];
+            }
+
+            $sql = "DELETE FROM `group_word_relation` WHERE group_id = {$group_id} ";
+            
+            $conn->query($sql);
+
+            $sql = "DELETE FROM `group_detail` WHERE user_id = {$user_id} AND ID = {$group_id} ";
+            
+            $conn->query($sql);
+
+        }
+
+
     }else{
         if(isset($_POST_['action'])){
             $action = $_POST_['action'];
