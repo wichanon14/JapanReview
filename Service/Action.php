@@ -185,7 +185,7 @@ if ($conn->connect_error) {
                 
                 $value = "";
                 foreach($datas as $data){
-                    $value .= "({$ID},{$data['ID']}),";
+                    $value .= "({$ID},{$data['data_id']}),";
                 }
 
                 $sql = "INSERT INTO `group_word_relation`(group_id,word_id) 

@@ -158,7 +158,6 @@ function saveGroup(result_label_id,user_id,group_id){
       $.ajax(settings).done(function (response) {
             
             //$('#'+id).html(groupListFormat(response));
-            console.log(response);
             if(response.msg.indexOf("Success")!==-1){
                 $('#'+result_label_id).addClass('text-success');
             }else{

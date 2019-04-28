@@ -102,6 +102,25 @@
 
         }
 
+        function onAddGroup(obj){
+
+            var user_id=1;
+            var group_id = 0;
+            $('#save-btn').attr('group-id',group_id);
+            $('#save-btn').attr('user-id',user_id);
+            words=[];
+            getGroup('words',user_id,group_id);
+            //$('#words').html(addGroupFormat(words));
+            $('#list-group > a').removeClass('active');
+            
+            $('#group-manage-addword').removeClass('hide');
+            $('#group-manage-addword').addClass('show');
+            $('.Label > span ').text('Group Name1');
+            $('.edit-Label > input ').val('Group Name1');
+            groupSelect = $(obj).attr('data-id');
+
+        }
+
         function saveGroupOnPage(obj){
             var group_id = $('#save-btn').attr('group-id');
             var user_id = $('#save-btn').attr('user-id');
@@ -120,6 +139,7 @@
                 <div class="mt-3">
                     <h2>
                         List Group
+                        <i class="fa fa-plus clickable font-large text-primary" onclick="onAddGroup(this)"></i>
                     </h2>
                 </div>
                 <div id="list-group" class="list-group scrollbar-custom" style="height:197px;overflow-y:auto;">
