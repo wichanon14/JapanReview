@@ -197,7 +197,7 @@
 
                         </h2>
                     </div>
-                    <div class="col-sm-3 mt-2 mb-2 hide font-weight-bold" id="result-save">
+                    <div class="col-sm-4 mt-2 mb-2 hide font-weight-bold" id="result-save">
                         
                     </div>
                     <div>

@@ -170,7 +170,7 @@ if ($conn->connect_error) {
                 if($conn->query($sql)){
                     echo '{"msg":"Save Success"}';
                 }else{
-                    echo '{"msg":"Save Fail"}';
+                    echo '{"msg":"Save Empty Group"}';
                 }
 
             }else{
@@ -196,7 +196,7 @@ if ($conn->connect_error) {
                     echo '{"msg":"Save Success"}';
                     mysqli_free_result($result);
                 }else{
-                    echo '{"msg":"Save Fail"}';
+                    echo '{"msg":"Save Empty Group"}';
                 }
                 
                 $conn->query($sql);       
@@ -284,6 +284,8 @@ if ($conn->connect_error) {
             $sql = "DELETE FROM `group_detail` WHERE user_id = {$user_id} AND ID = {$group_id} ";
             
             $conn->query($sql);
+
+            echo '{"msg":"Delete Success"}';
 
         }
 

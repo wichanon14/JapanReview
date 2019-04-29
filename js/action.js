@@ -92,7 +92,7 @@ function deleteGroup(obj){
           }
           
           $.ajax(settings).done(function (response) {
-            
+
                 window.location.reload();
           });
     }
@@ -188,15 +188,14 @@ function saveGroup(result_label_id,user_id,group_id){
       $.ajax(settings).done(function (response) {
             
             //$('#'+id).html(groupListFormat(response));
-            if(response.msg.indexOf("Success")!==-1){
-                $('#'+result_label_id).addClass('text-success');
-            }else{
-                $('#'+result_label_id).addClass('text-danger');
-            }
+            $('#'+result_label_id).addClass('text-success');
             $('#'+result_label_id).removeClass('hide');
             $('#'+result_label_id).addClass('show');
             $('#'+result_label_id).text(response.msg);
 
+            if(group_id+""==="0"){
+                window.location.reload();
+            }
             setTimeout(function(){
                 $('#'+result_label_id).removeClass('text-success');
                 $('#'+result_label_id).removeClass('text-danger');
