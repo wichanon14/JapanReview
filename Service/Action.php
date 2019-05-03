@@ -1,13 +1,13 @@
-<? 
+<?php 
 header("Content-type:application/json");
-require_once('\initial.php');
+require_once('initial.php');
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }else{
     //echo "Connected successfully";
 }   
-    $_POST_ = $_POST;
+    $_POST = $_POST;
     if(file_get_contents('php://input')){
         $_POST = json_decode(file_get_contents('php://input'), true);
     }
@@ -289,59 +289,76 @@ if ($conn->connect_error) {
 
         }
 
+        if($action == "AddingWord"){
 
-    }else{
-        if(isset($_POST_['action'])){
-            $action = $_POST_['action'];
-            if($action == "AddingWord"){
+            if(isset($_POST['kanji'])){
+                $kanji = $_POST['kanji'];
+                
+            }else{
+                $kanji = '';
+            }
+        
+            if(isset($_POST['hiragana'])){
+                $hiragana = $_POST['hiragana'];
+                
+            }else{
+                $hiragana = '';
+            }
+        
+            if(isset($_POST['romanji'])){
+                $romanji = $_POST['romanji'];
+                
+            }else{
+                $romanji = '';
+            }
 
-                if(isset($_POST_['kanji'])){
-                    $kanji = $_POST_['kanji'];
-                    echo '<br>'.$kanji;
-                }else{
-                    die("Variable not set");
-                }
+            if(isset($_POST['meaning'])){
+                $meaning = $_POST['meaning'];
+                
+            }else{
+                $meaning = '';
+            }
+
+            $sql = "SELECT ID FROM words WHERE KANJI = '{$kanji}'";
+            $result = $conn->query($sql);
             
-                if(isset($_POST_['hiragana'])){
-                    $hiragana = $_POST_['hiragana'];
-                    echo '<br>'.$hiragana;
-                }else{
-                    die("Variable not set");
-                }
-            
-                if(isset($_POST_['romanji'])){
-                    $romanji = $_POST_['romanji'];
-                    echo '<br>'.$romanji;
-                }else{
-                    die("Variable not set");
-                }
+            $row = $result->fetch_assoc();
 
-                if(isset($_POST_['meaning'])){
-                    $meaning = $_POST_['meaning'];
-                    echo '<br>'.$meaning;
-                }else{
-                    die("Variable not set");
-                }
-
-                $sql = "INSERT INTO Words(`KANJI`,`HIRAGANA`,`ROMANJI`,`MEANING`,`ADD_DATE`,`UPDATE_DATE`) 
-                VALUES ('{$kanji}','{$hiragana}','{$romanji}','{$meaning}',NOW(),NOW())";
+            if(!$row['ID']){
+                
+                $sql = "INSERT INTO words(`KANJI`,`HIRAGANA`,`ROMANJI`,`MEANING`,`ADD_DATE`,`UPDATE_DATE`) 
+                    VALUES ('{$kanji}','{$hiragana}','{$romanji}','{$meaning}',NOW(),NOW())";
 
                 if ($conn->query($sql) == TRUE) {
-                    //echo "<br>\"{$kanji}\" was added on ". date("Y/m/d");
+                    
+                    $sql = "SELECT ID FROM words WHERE KANJI = '{$kanji}'";
+                    $result = $conn->query($sql);
+                    
+                    $row = $result->fetch_assoc();
+
                     $_SESSION['message'] = "{$kanji} was added on ". date("Y/m/d");
                     $_SESSION['add_result'] = "complete"; 
+                    echo '{ "msg":"add successfull" ,"ID":'.$row['ID'].' }';
                 } else {
                     $_SESSION['message'] = "{$kanji} wasn't added on ". date("Y/m/d");
                     $_SESSION['add_result'] = "incomplete";
-                    echo "Error: " . $sql . "<br>" . $conn->error;
+                    
+                    echo '{ "msg":"add fail" }';
                 }
-            
-                echo 'connection closed';
 
-                header("Location: /JapanReview/page-word-action.php");
-
+            }else {
+                $_SESSION['message'] = "{$kanji} wasn't added on ". date("Y/m/d");
+                $_SESSION['add_result'] = "incomplete";
+                
+                echo '{ "msg":"add fail" , "ID": '.$row['ID'].'}';
             }
+
+            
+        
         }
+
+
+    }else{
         
     } 
 

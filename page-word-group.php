@@ -2,7 +2,7 @@
     session_start();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="jp">
 
 <head>
     <title>Grouping Word</title>
@@ -24,63 +24,45 @@
     <script src="./js/action.js"></script>
 </head>
 
-<body>
+<body class="scrollbar-custom">
     <script>
         var words = [];
         var groupSelect = "";
-
-        $(document).ready(function () {
-
-            $('#search').on('keyup', function (e) {
-                if (e.keyCode === 13) {
-                    e.preventDefault();
-
-                    $('#add_status').removeClass("show");
-                    $('#add_status').addClass("hide");
-
-                    var optionObj = getWordOptionObj(this.value);
-
-                    var check_exist = words.filter(function (val) {
-                        return $(optionObj).attr('data-id') === val.data_id;
-                    })
-
-
-                    if (!check_exist.length) {
-                        if ($(optionObj).attr('data-id')) {
-                            var data = {
-                                data_id: $(optionObj).attr('data-id'),
-                                word: $(optionObj).val()
-                            }
-
-                            words.splice(0, 0, data);
-
-                            $('#words').html(addGroupFormat(words));
+        var existData;
+        getAllWord(null,'existData');
+        var searchResult=[];
+        function searchFromAPI(obj){
+            let request = new XMLHttpRequest();
+            request.open("GET", "https://cors.io/?https://jisho.org/api/v1/search/words?keyword="+$(obj).val(), true);
+            request.onload = () => {
+                var response = JSON.parse(request.responseText);
+                var defaultLabel = '<li class="insert list-group-item d-flex justify-content-between align-items-center bg-dark text-white">'+
+                        '<span class="font-weight-bold">Search Result</span></li>';
+                    /*<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">
+                    response.data[i].japanese[0].word;
+                    </li>*/
+                searchResult = response.data;
+                for(var i=0;i<response.data.length;i++){
+                    if(response.data[i].japanese[0].word){
+                        var addCase = '<span class="badge badge-pill"><i data-id='.concat(i,
+                        ' class="text-dark font-large fa fa-plus clickable" onclick="addGroup(',i,')"></i></span>');
+                         
+                        if(checkExist(words,response.data[i].japanese[0].word)){
+                            defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">'.concat(
+                            response.data[i].japanese[0].word,' (',response.data[i].japanese[0].reading,')</li>');
+                        }else{
+                            defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">'.concat(
+                            response.data[i].japanese[0].word,' (',response.data[i].japanese[0].reading,')',addCase,'</li>');
                         }
 
-                    } else {
-                        $('#add_status').removeClass("hide");
-                        $('#add_status').addClass("show");
-
-                        setTimeout(function(){
-                            $('#add_status').removeClass("show");
-                            $('#add_status').addClass("hide");
-                        },3000);
+                        
                     }
-
-                    this.value = "";
+                    
                 }
-            });
-
-        })
-
-        function getWordOptionObj(value) {
-            var Alloption = $('#word-datalist > option');
-
-            var obj = Alloption.filter(function (index, elem) {
-                return elem.value === value;
-            });
-
-            return $(obj)[0];
+                $('#result-words-search').html(defaultLabel);
+                //console.log(response.data[0].japanese[0].word);
+            }
+            request.send();
         }
 
         function onSelectGroup(obj){
@@ -101,6 +83,7 @@
 
         }
 
+        // Adding Group
         function onAddGroup(obj){
 
             var user_id=1;
@@ -109,7 +92,6 @@
             $('#save-btn').attr('user-id',user_id);
             words=[];
             getGroup('words',user_id,group_id);
-            //$('#words').html(addGroupFormat(words));
             $('#list-group > a').removeClass('active');
             
             $('#group-manage-addword').removeClass('hide');
@@ -120,6 +102,7 @@
 
         }
 
+        //Save group after edit or added word.
         function saveGroupOnPage(obj){
             var group_id = $('#save-btn').attr('group-id');
             var user_id = $('#save-btn').attr('user-id');
@@ -143,11 +126,59 @@
             deleteGroup(obj);
         }
 
-        getAllWord();
+        // check new search word with exist word 
+        function checkExist(data,kanji){
+            for(var i=0;i<data.length;i++){
+                if(data[i].KANJI === kanji){
+                    return true
+                }
+            }
+            return false;
+        }
+
+        //Add word to group
+        function addGroup(id){
+            AddToGroup(id);
+            
+        }
+
         getGroupList('list-group',1,'');
     </script>
-    <div class="container">
-        <div></div>
+    <style>
+        .navbar{
+            height: 4em;
+        }
+
+        .mt-minus-2{
+            margin-top: -0.2em;
+        }
+
+    </style>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        
+        <a class="navbar-brand mt-minus-2" href="#">
+            <img src="./img/logo.png" width="100" height="47.4" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler mt-minus-2" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Learning Journey</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pricing</a>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+
+    <div class="container" style="margin-top:5em;">
         <div class="row">
             <div class="col-sm-5" style="margin-right:3em;">
                 <div class="mt-3">
@@ -168,8 +199,8 @@
                     <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
                 </div>
             </div>
-            <div id="group-manage-addword" class="col-sm-6 mt-3 ml-3 hide" >
-                <div class="row">
+            <div id="group-manage-addword" class="col-sm-6 mt-3 hide" >
+                <div class="row  ml-1">
                     <h2>Word Grouping</h2>
                     <div class="text-danger ml-3 mt-2 hide font-weight-bold" id="add_status">
                         <span >You had alread added.</span>
@@ -177,10 +208,22 @@
                 </div>
                 
                 <div class="row">
-                    <input class="form-control col-sm-8" type="text" id="search" list="word-datalist" placeholder="Search Word" />
-
+                    <div class="col-sm-8" style="margin-right:1%;">
+                        <input class="form-control " type="text" id="search" name="searchForm" placeholder="Search Word" oninput="searchFromAPI(this)"/>
+                    </div>
+                    <div class="col-sm-8 mt-3" >
+                        <ul class="list-group border scrollbar-custom" id="result-words-search" style="height:10em;overflow-y:auto;">
+                            <li class="insert list-group-item d-flex justify-content-between align-items-center bg-dark text-white">
+                                <span class="font-weight-bold">Search Result</span>
+                            </li>
+                            <!--li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">
+                                ひらがな
+                            </li-->
+                        </ul>
+                    </div>
                 </div>
-                <div class="row" style="margin-top:150px;">
+                
+                <div class="row ml-1" style="margin-top:50px;">
                     <div>
                         <h2>
                             <div class="Label">
@@ -204,7 +247,7 @@
 
                     </div>
                 </div>
-                <div class="row col-sm-8 scrollbar-custom" style="height:300px;overflow-y:auto;">
+                <div class="row col-sm-8 scrollbar-custom" style="height:250px;overflow-y:auto;">
                     <ul class="list-group" style="width:20em;" id="words">
 
                     </ul>
