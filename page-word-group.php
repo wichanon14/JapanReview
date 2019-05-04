@@ -231,7 +231,7 @@
                     <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
                 </div>
             </div>
-            <div id="group-manage-addword insert" class="col-sm-6 mt-3 hide" >
+            <div id="group-manage-addword" class="col-sm-6 mt-3 hide" >
                 <div class="row  ml-1">
                     <h2>Word Grouping</h2>
                     <div class="text-danger ml-3 mt-2 hide font-weight-bold" id="add_status">

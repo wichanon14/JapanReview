@@ -75,8 +75,8 @@
             </div>
 
         </nav>
-        <div class="container">
-            <img src="./img/logo.png"/>
+        <div class="container text-center mt-5">
+            <img  src="./img/logo.png"/>
         </div>
     </body>
 </html>
