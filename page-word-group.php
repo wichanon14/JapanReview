@@ -6,22 +6,7 @@
 
 <head>
     <title>Grouping Word</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/action.css">
-    <link rel="stylesheet" href="./css/AnimateField.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-    </script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-    </script>
-    <script src="./js/formatAdjust.js"></script>
-    <script src="./js/action.js"></script>
+    <?php require_once('header-resource.php'); ?>
 </head>
 
 <body class="scrollbar-custom">
@@ -71,13 +56,13 @@
             var group_id = $(obj).attr('data-id');
             $('#save-btn').attr('group-id',group_id);
             $('#save-btn').attr('user-id',user_id);
-            getGroup('words',user_id,group_id);
+            getGroup('words',user_id,group_id,'number-word');
             //$('#words').html(addGroupFormat(words));
             $('#list-group > a').removeClass('active');
             $(obj).addClass('active');
             $('#group-manage-addword').removeClass('hide');
             $('#group-manage-addword').addClass('show');
-            $('.Label > span ').text($(obj).text());
+            $('.Label > #group-name ').text($(obj).text());
             $('.edit-Label > input ').val($(obj).text());
             groupSelect = $(obj).attr('data-id');
 
@@ -91,15 +76,14 @@
             $('#save-btn').attr('group-id',group_id);
             $('#save-btn').attr('user-id',user_id);
             words=[];
-            getGroup('words',user_id,group_id);
+            getGroup('words',user_id,group_id,'number-word');
             $('#list-group > a').removeClass('active');
             
             $('#group-manage-addword').removeClass('hide');
             $('#group-manage-addword').addClass('show');
-            $('.Label > span ').text('Group Name1');
+            $('.Label > #group-name ').text('Group Name1');
             $('.edit-Label > input ').val('Group Name1');
             groupSelect = $(obj).attr('data-id');
-
         }
 
         //Save group after edit or added word.
@@ -112,7 +96,7 @@
                 $('#group-manage-addword').addClass('hide');
             }
 
-            saveGroup('result-save',user_id,group_id);
+            saveGroup('result-save',user_id,group_id,'group-name');
             getGroupList('list-group',user_id,'');
             
         }
@@ -120,10 +104,6 @@
         function onSearchGroupList(id,user_id,keyword){
             getGroupList(id,user_id,keyword);
             
-        }
-
-        function deleteGroupList(obj){
-            deleteGroup(obj);
         }
 
         // check new search word with exist word 
@@ -138,77 +118,13 @@
 
         //Add word to group
         function addGroup(id){
-            AddToGroup(id);
-            
+            AddToGroup(id,'number-word');
         }
 
         getGroupList('list-group',1,'');
     </script>
-    <style>
-        .navbar{
-            height: 4em;
-        }
-
-        .mt-minus-2{
-            margin-top: -0.2em;
-        }
-
-    </style>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        
-        <a class="navbar-brand mt-minus-2" href="#">
-            <img src="./img/logo.png" width="100" height="47.4" class="d-inline-block align-top" alt="">
-        </a>
-        <button class="navbar-toggler mt-minus-2" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>        
-        <div class="collapse navbar-collapse bg-dark " id="navbarNav">
-            <ul class="navbar-nav mr-auto bg-dark ml-4 mr-4">
-                <li class="nav-item ">
-                    <a class="nav-link" href="#">Home </a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Learning Journey <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Practice Journey</a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Sign In Module -->
-        <div class="nav-item dropdown my-2 my-lg-0">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Sign In
-            </a>
-            <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink" style="width:21em;margin-left:-15em;">
-                <div class="row mt-3"></div>
-                <div class="row">
-                    <div class="col-sm-4 mt-1 ml-4 mr-1 text-light">
-                        <span>Username :</span>
-                    </div>
-                    <div class="col-sm-6">
-                        <input class="form-control" type="input" />
-                    </div>
-                </div>
-                <div class="row mt-3"></div>
-                <div class="row">
-                    <div class="col-sm-4 mt-1 ml-4 mr-1 text-light">
-                        <span>Password :</span>
-                    </div>
-                    <div class="col-sm-6">
-                        <input class="form-control" type="password" />
-                    </div>
-                </div>
-                <div class="row mt-3" style="margin-left:63%;">
-                    <div class="col-sm-5">
-                        <button class="btn btn-outline-light" type="button">Sign In</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </nav>
+    
+    <?php require_once('header.php') ?>
 
     <div class="container" style="margin-top:5em;">
         <div class="row">
@@ -259,19 +175,21 @@
                     <div>
                         <h2>
                             <div class="Label">
-                                <span>
+                                <span id="group-name">
                                     Group Name
                                 </span>
+                                <span id="number-word" class="badge badge-dark badge-pill" style="font-size:0.4em;">14</span>
                                 <i class="fa fa-pencil clickable font-large text-primary" onclick="editWord('Label')"></i>
                                 <i class="fa fa-save clickable font-large text-primary" id="save-btn" onclick="saveGroupOnPage(this)"></i>
                             </div>
                             <div class="hide edit-Label">
                                 <input type="text" value="Group Name" />
-                                <i class="fa fa-check clickable" onclick="save('Label')"></i>
+                                <i class="fa fa-check clickable" onclick="save('Label','group-name')"></i>
                             </div>
 
                         </h2>
                     </div>
+                    
                     <div class="col-sm-4 mt-2 mb-2 hide font-weight-bold" id="result-save">
                         
                     </div>

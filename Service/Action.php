@@ -357,7 +357,44 @@ if ($conn->connect_error) {
         
         }
 
+        if($action == "getMultiGroup"){
 
+            if(isset($_POST['user_id'])){
+                $user_id = $_POST['user_id'];
+            }
+
+            $listGroup='';
+            if(isset($_POST['group_id'])){
+                $group_id = $_POST['group_id'];
+                for($i = 0;$i<sizeof($group_id);$i++){
+                    $listGroup .= $group_id[$i].',';
+                }
+                if($listGroup){
+                    $listGroup = substr($listGroup,0,-1);
+                }
+            }
+
+            $sql = "SELECT DISTINCT(gwr.word_id) ,w.KANJI as word,w.KANJI,w.HIRAGANA,w.ROMANJI,w.MEANING,gwr.word_id as data_id FROM `group_detail` gd
+            INNER JOIN `group_word_relation` gwr on
+            gd.ID = gwr.group_id
+            INNER JOIN `words` w on 
+            w.ID = gwr.word_id
+            WHERE gd.user_id = {$user_id} AND gwr.group_id IN ({$listGroup}) ";
+            
+            $result = $conn->query($sql);
+            
+            if($result){
+
+                $Groups = array();
+                while($row = $result->fetch_assoc()){
+                    array_push($Groups,$row);
+                }
+                echo json_encode($Groups);
+                mysqli_free_result($result);
+            }
+            
+
+        }
     }else{
         
     } 

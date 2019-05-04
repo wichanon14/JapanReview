@@ -7,14 +7,19 @@ function editWord(id){
 
 }
 
-function save(id){
+function save(id,subid){
 
     $('.'+id).removeClass('hide');
     $('.'+id).addClass('show');
     $('.edit-'+id).removeClass('show');
     $('.edit-'+id).addClass('hide');
 
-    $('.'+id+' > span').text($('.edit-'+id+' > input').val());
+    if(subid){
+      $('.'+id+' > #'+subid).text($('.edit-'+id+' > input').val());
+    }else{
+      $('.'+id+' > span').text($('.edit-'+id+' > input').val());
+    }
+    
 }
 
 function deleteItem(array_data,data_id,result_id){
@@ -128,6 +133,7 @@ function getAllWord(id,data){
       });
 }
 
+//get group List sigle select
 function getGroupList(id,user_id,keyword){
     var settings = {
         "async": true,
@@ -156,8 +162,7 @@ function getGroupList(id,user_id,keyword){
       });
 }
 
-
-function getGroup(id,user_id,group_id){
+function getGroup(id,user_id,group_id,number_result){
     var settings = {
         "async": true,
         "crossDomain": true,
@@ -174,15 +179,16 @@ function getGroup(id,user_id,group_id){
             
             $('#'+id).html(addGroupFormat(response));
             words = response;
+            $('#'+number_result).text(words.length);
 
       });
 }
 
 // Add Group and Edit Group
-function saveGroup(result_label_id,user_id,group_id){
+function saveGroup(result_label_id,user_id,group_id,group_name_id){
 
     var groupObj = {
-        "groupName":$('.Label > span').text(),
+        "groupName":$('.Label > #'+group_name_id).text(),
         "data":words
     } 
 
@@ -257,7 +263,7 @@ function AddWord(id){
       });
 }
 
-function AddToGroup(id){
+function AddToGroup(id,number_result){
     var settings = {
         "async": true,
         "crossDomain": true,
@@ -279,231 +285,298 @@ function AddToGroup(id){
         words.splice(0, 0, data);
         $('#words').html(addGroupFormat(words));
         $('li')[id+1].innerHTML = '<span>'.concat(searchResult[id].japanese[0].word,' (',searchResult[id].japanese[0].reading,')</span>');
+        $('#'+number_result).text(words.length);
       });
 }
 
 function toRomanji(japaneseWord){
     var word = japaneseWord;
+    var english = /^[A-Za-z]/;
+      
+    while(!english.test(word)){
+      word = word.replace(/ん/g, "n");
+      word = word.replace(/きゃ/g, "kya");
+      word = word.replace(/きゅ/g, "kyu");
+      word = word.replace(/きょ/g, "kyo");
+      word = word.replace(/にゃ/g, "nya");
+      word = word.replace(/にゅ/g, "nyu");
+      word = word.replace(/にょ/g, "nyo");
+      word = word.replace(/しゃ/g, "sha");
+      word = word.replace(/しゅ/g, "shu");
+      word = word.replace(/しょ/g, "sho");
+      word = word.replace(/ちゃ/g, "cha");
+      word = word.replace(/ちゅ/g, "chu");
+      word = word.replace(/ちょ/g, "cho");
+      word = word.replace(/ひゃ/g, "hya");
+      word = word.replace(/ひゅ/g, "hyu");
+      word = word.replace(/ひょ/g, "hyo");
+      word = word.replace(/みゃ/g, "mya");
+      word = word.replace(/みゅ/g, "myu");
+      word = word.replace(/みょ/g, "myo");
+      word = word.replace(/りゃ/g, "rya");
+      word = word.replace(/りゅ/g, "ryu");
+      word = word.replace(/りょ/g, "ryo");
+      word = word.replace(/ぎゃ/g, "gya");
+      word = word.replace(/ぎゅ/g, "gyu");
+      word = word.replace(/ぎょ/g, "gyo");
+      word = word.replace(/びゃ/g, "bya");
+      word = word.replace(/びゅ/g, "byu");
+      word = word.replace(/びょ/g, "byo");
+      word = word.replace(/ぴゃ/g, "pya");
+      word = word.replace(/ぴゅ/g, "pyu");
+      word = word.replace(/ぴょ/g, "pyo");
+      word = word.replace(/じゃ/g, "ja");
+      word = word.replace(/じゅ/g, "ju");
+      word = word.replace(/じょ/g, "jo");
 
-    word = word.replace('きゃ','kya');
-    word = word.replace('きゅ','kyu');
-    word = word.replace('きょ','kyo');
-    word = word.replace('キャ','kya');
-    word = word.replace('キュ','kyu');
-    word = word.replace('キョ','kyo');
-    word = word.replace('ぎゃ','gya');
-    word = word.replace('ぎゅ','gyu');
-    word = word.replace('ぎょ','gyo');
-    word = word.replace('ギャ','gya');
-    word = word.replace('ギュ','gyu');
-    word = word.replace('ギョ','gyo');
-    word = word.replace('しゃ','sha');
-    word = word.replace('しゅ','shu');
-    word = word.replace('しょ','sho');
-    word = word.replace('シャ','sha');
-    word = word.replace('シュ','shu');
-    word = word.replace('ショ','sho');
-    word = word.replace('ちゃ','cha');
-    word = word.replace('ちゅ','chu');
-    word = word.replace('ちょ','cho');
-    word = word.replace('チャ','cha');
-    word = word.replace('チュ','chu');
-    word = word.replace('チョ','cho');
-    word = word.replace('にゃ','nya');
-    word = word.replace('にゅ','nyu');
-    word = word.replace('にょ','nyo');
-    word = word.replace('ニャ','nya');
-    word = word.replace('ニュ','nyu');
-    word = word.replace('ニョ','nyo');
-    word = word.replace('ひゃ','hya');
-    word = word.replace('ひゅ','hyu');
-    word = word.replace('ひょ','hyo');
-    word = word.replace('ヒャ','hya');
-    word = word.replace('ヒュ','hyu');
-    word = word.replace('ヒョ','hyo');
-    word = word.replace('びゃ','bya');
-    word = word.replace('びゅ','byu');
-    word = word.replace('びょ','byo');
-    word = word.replace('ビャ','bya');
-    word = word.replace('ビュ','byu');
-    word = word.replace('ビョ','byo');
-    word = word.replace('ぴゃ','pya');
-    word = word.replace('ぴゅ','pyu');
-    word = word.replace('ぴょ','pyo');
-    word = word.replace('ピャ','pya');
-    word = word.replace('ピュ','pyu');
-    word = word.replace('ピョ','pyo');
-    word = word.replace('りゃ','rya');
-    word = word.replace('りゅ','ryu');
-    word = word.replace('りょ','ryo');
-    word = word.replace('リャ','rya');
-    word = word.replace('リュ','ryu');
-    word = word.replace('リョ','ryo');
+      word = word.replace(/し/g, "shi");
+      word = word.replace(/ち/g, "chi");
+      word = word.replace(/つ/g, "tsu");
 
-    word = word.replace('あ','a');
-    word = word.replace('い','i');
-    word = word.replace('う','u');
-    word = word.replace('え','e');
-    word = word.replace('お','o');
-    word = word.replace('ア','a');
-    word = word.replace('イ','i');
-    word = word.replace('ウ','u');
-    word = word.replace('エ','e');
-    word = word.replace('オ','o');
+      word = word.replace(/ば/g, "ba");
+      word = word.replace(/だ/g, "da");
+      word = word.replace(/が/g, "ga");
+      word = word.replace(/は/g, "ha");
+      word = word.replace(/か/g, "ka");
+      word = word.replace(/ま/g, "ma");
+      word = word.replace(/な/g, "na");
+      word = word.replace(/ぱ/g, "pa");
+      word = word.replace(/ら/g, "ra");
+      word = word.replace(/さ/g, "sa");
+      word = word.replace(/た/g, "ta");
+      word = word.replace(/わ/g, "wa");
+      word = word.replace(/や/g, "ya");
+      word = word.replace(/ざ/g, "za");
+      word = word.replace(/あ/g, "a");
+      word = word.replace(/べ/g, "be");
+      word = word.replace(/で/g, "de");
+      word = word.replace(/げ/g, "ge");
+      word = word.replace(/へ/g, "he");
+      word = word.replace(/け/g, "ke");
+      word = word.replace(/め/g, "me");
+      word = word.replace(/ね/g, "ne");
+      word = word.replace(/ぺ/g, "pe");
+      word = word.replace(/れ/g, "re");
+      word = word.replace(/せ/g, "se");
+      word = word.replace(/て/g, "te");
+      word = word.replace(/ゑ/g, "we");
+      word = word.replace(/ぜ/g, "ze");
+      word = word.replace(/え/g, "e");
+      word = word.replace(/び/g, "bi");
+      word = word.replace(/ぎ/g, "gi");
+      word = word.replace(/ひ/g, "hi");
+      word = word.replace(/き/g, "ki");
+      word = word.replace(/み/g, "mi");
+      word = word.replace(/に/g, "ni");
+      word = word.replace(/ぴ/g, "pi");
+      word = word.replace(/り/g, "ri");
+      word = word.replace(/ゐ/g, "wi");
+      word = word.replace(/じ/g, "ji");
+      word = word.replace(/い/g, "i");
+      word = word.replace(/ぼ/g, "bo");
+      word = word.replace(/ど/g, "do");
+      word = word.replace(/ご/g, "go");
+      word = word.replace(/ほ/g, "ho");
+      word = word.replace(/こ/g, "ko");
+      word = word.replace(/も/g, "mo");
+      word = word.replace(/の/g, "no");
+      word = word.replace(/ぽ/g, "po");
+      word = word.replace(/ろ/g, "ro");
+      word = word.replace(/そ/g, "so");
+      word = word.replace(/と/g, "to");
+      word = word.replace(/を/g, "wo");
+      word = word.replace(/よ/g, "yo");
+      word = word.replace(/ぞ/g, "zo");
+      word = word.replace(/お/g, "o");
+      word = word.replace(/ぶ/g, "bu");
+      word = word.replace(/ぐ/g, "gu");
+      word = word.replace(/ふ/g, "fu");
+      word = word.replace(/く/g, "ku");
+      word = word.replace(/む/g, "mu");
+      word = word.replace(/ぬ/g, "nu");
+      word = word.replace(/ぷ/g, "pu");
+      word = word.replace(/る/g, "ru");
+      word = word.replace(/す/g, "su");
+      word = word.replace(/ゆ/g, "yu");
+      word = word.replace(/ず/g, "zu");
+      word = word.replace(/う/g, "u");
+      word = word.replace(/ゔ/g, "v");
+      word = word.replace(/ぢ/g, "ji");
+      word = word.replace(/づ/g, "zu");
 
-    word = word.replace('か','ka');
-    word = word.replace('き','ki');
-    word = word.replace('く','ku');
-    word = word.replace('け','ke');
-    word = word.replace('こ','ko');
-    word = word.replace('カ','ka');
-    word = word.replace('キ','ki');
-    word = word.replace('ク','ku');
-    word = word.replace('ケ','ke');
-    word = word.replace('コ','ko');
+      // ka
+      word = word.replace(/ン/g, "n");
+      word = word.replace(/キャ/g, "kya");
+      word = word.replace(/キュ/g, "kyu");
+      word = word.replace(/キョ/g, "kyo");
+      word = word.replace(/ニャ/g, "nya");
+      word = word.replace(/ニュ/g, "nyu");
+      word = word.replace(/ニョ/g, "nyo");
+      word = word.replace(/シャ/g, "sha");
+      word = word.replace(/シュ/g, "shu");
+      word = word.replace(/ショ/g, "sho");
+      word = word.replace(/チャ/g, "cha");
+      word = word.replace(/チュ/g, "chu");
+      word = word.replace(/チョ/g, "cho");
+      word = word.replace(/ヒャ/g, "hya");
+      word = word.replace(/ヒュ/g, "hyu");
+      word = word.replace(/ヒョ/g, "hyo");
+      word = word.replace(/ミャ/g, "mya");
+      word = word.replace(/ミュ/g, "myu");
+      word = word.replace(/ミョ/g, "myo");
+      word = word.replace(/リャ/g, "rya");
+      word = word.replace(/リュ/g, "ryu");
+      word = word.replace(/リョ/g, "ryo");
+      word = word.replace(/ギャ/g, "gya");
+      word = word.replace(/ギュ/g, "gyu");
+      word = word.replace(/ギョ/g, "gyo");
+      word = word.replace(/ビャ/g, "bya");
+      word = word.replace(/ビュ/g, "byu");
+      word = word.replace(/ビョ/g, "byo");
+      word = word.replace(/ピャ/g, "pya");
+      word = word.replace(/ピュ/g, "pyu");
+      word = word.replace(/ピョ/g, "pyo");
+      word = word.replace(/ジャ/g, "ja");
+      word = word.replace(/ジュ/g, "ju");
+      word = word.replace(/ジョ/g, "jo");
 
-    word = word.replace('が','ga');
-    word = word.replace('ぎ','gi');
-    word = word.replace('ぐ','gu');
-    word = word.replace('げ','ge');
-    word = word.replace('ご','go');
-    word = word.replace('ガ','ga');
-    word = word.replace('ギ','gi');
-    word = word.replace('グ','gu');
-    word = word.replace('ゲ','ge');
-    word = word.replace('ゴ','go');
+      // ajout
+      word = word.replace(/ツァ/g, "tsa");
+      word = word.replace(/ツィ/g, "tsi");
+      word = word.replace(/ツェ/g, "tse");
+      word = word.replace(/ツォ/g, "tso");
+      word = word.replace(/チェ/g, "che");
+      word = word.replace(/シェ/g, "she");
+      word = word.replace(/ジェ/g, "je");
+      word = word.replace(/ティ/g, "ti");
+      word = word.replace(/ディ/g, "di");
+
+      word = word.replace(/シ/g, "shi");
+      word = word.replace(/チ/g, "chi");
+      word = word.replace(/ツ/g, "tsu");
+      word = word.replace(/ヅ/g, "dzu");
+      word = word.replace(/ヂ/g, "dji");
+
+      word = word.replace(/バ/g, "ba");
+      word = word.replace(/ダ/g, "da");
+      word = word.replace(/ガ/g, "ga");
+      word = word.replace(/ハ/g, "ha");
+      word = word.replace(/カ/g, "ka");
+      word = word.replace(/マ/g, "ma");
+      word = word.replace(/ナ/g, "na");
+      word = word.replace(/パ/g, "pa");
+      word = word.replace(/ラ/g, "ra");
+      word = word.replace(/サ/g, "sa");
+      word = word.replace(/タ/g, "ta");
+      word = word.replace(/ワ/g, "wa");
+      word = word.replace(/ヤ/g, "ya");
+      word = word.replace(/ザ/g, "za");
+      word = word.replace(/ア/g, "a");
+      word = word.replace(/ベ/g, "be");
+      word = word.replace(/デ/g, "de");
+      word = word.replace(/ゲ/g, "ge");
+      word = word.replace(/ヘ/g, "he");
+      word = word.replace(/ケ/g, "ke");
+      word = word.replace(/メ/g, "me");
+      word = word.replace(/ネ/g, "ne");
+      word = word.replace(/ペ/g, "pe");
+      word = word.replace(/レ/g, "re");
+      word = word.replace(/セ/g, "se");
+      word = word.replace(/テ/g, "te");
+      word = word.replace(/ヱ/g, "we");
+      word = word.replace(/ゼ/g, "ze");
+      word = word.replace(/エ/g, "e");
+      word = word.replace(/ビ/g, "bi");
+      word = word.replace(/ギ/g, "gi");
+      word = word.replace(/ヒ/g, "hi");
+      word = word.replace(/キ/g, "ki");
+      word = word.replace(/ミ/g, "mi");
+      word = word.replace(/ニ/g, "ni");
+      word = word.replace(/ピ/g, "pi");
+      word = word.replace(/リ/g, "ri");
+      word = word.replace(/ヰ/g, "wi");
+      word = word.replace(/ジ/g, "ji");
+      word = word.replace(/イ/g, "i");
+      word = word.replace(/ボ/g, "bo");
+      word = word.replace(/ド/g, "do");
+      word = word.replace(/ゴ/g, "go");
+      word = word.replace(/ホ/g, "ho");
+      word = word.replace(/コ/g, "ko");
+      word = word.replace(/モ/g, "mo");
+      word = word.replace(/ノ/g, "no");
+      word = word.replace(/ポ/g, "po");
+      word = word.replace(/ロ/g, "ro");
+      word = word.replace(/ソ/g, "so");
+      word = word.replace(/ト/g, "to");
+      word = word.replace(/ヲ/g, "wo");
+      word = word.replace(/ヨ/g, "yo");
+      word = word.replace(/ゾ/g, "zo");
+      word = word.replace(/オ/g, "o");
+      word = word.replace(/ブ/g, "bu");
+      word = word.replace(/グ/g, "gu");
+      word = word.replace(/フ/g, "fu");
+      word = word.replace(/ク/g, "ku");
+      word = word.replace(/ム/g, "mu");
+      word = word.replace(/ヌ/g, "nu");
+      word = word.replace(/プ/g, "pu");
+      word = word.replace(/ル/g, "ru");
+      word = word.replace(/ス/g, "su");
+      word = word.replace(/ユ/g, "yu");
+      word = word.replace(/ズ/g, "zu");
+      word = word.replace(/ウ/g, "u");
+      word = word.replace(/oo/g, "ō");
+      word = word.replace(/ou/g, "ō");
+      word = word.replace(/uu/g, "ū");
+      word = word.replace(/ッk/g, "kk");
+      word = word.replace(/ッs/g, "ss");
+      word = word.replace(/ッt/g, "tt");
+      word = word.replace(/ッn/g, "nn");
+      word = word.replace(/ッm/g, "mm");
+      word = word.replace(/ッr/g, "rr");
+      word = word.replace(/ッg/g, "gg");
+      word = word.replace(/ッd/g, "dd");
+      word = word.replace(/ッb/g, "bb");
+      word = word.replace(/ッp/g, "pp");
+      word = word.replace(/ッf/g, "ff");
+      word = word.replace(/ッj/g, "jj");
+      word = word.replace(/ッ/g, "\!");
+      word = word.replace(/oー/g, "ō");
+      word = word.replace(/uー/g, "ū");
+      word = word.replace(/aー/g, "ā");
+      word = word.replace(/iー/g, "ī");
+      word = word.replace(/eー/g, "ē");
 
 
-    word = word.replace('さ','sa');
-    word = word.replace('し','shi');
-    word = word.replace('す','su');
-    word = word.replace('せ','se');
-    word = word.replace('そ','so');
-    word = word.replace('サ','sa');
-    word = word.replace('シ','shi');
-    word = word.replace('ス','su');
-    word = word.replace('セ','se');
-    word = word.replace('ソ','so');
+    }
 
-    word = word.replace('ざ','za');
-    word = word.replace('じ','ji');
-    word = word.replace('ず','zu');
-    word = word.replace('ぜ','ze');
-    word = word.replace('ぞ','zo');
-    word = word.replace('ザ','za');
-    word = word.replace('ジ','ji');
-    word = word.replace('ズ','zu');
-    word = word.replace('ゼ','ze');
-    word = word.replace('ゾ','zo');
+    while((word.indexOf('aa')!=-1)||(word.indexOf('ii')!=-1)||(word.indexOf('uu')!=-1)||(word.indexOf('oo')!=-1)||
+    (word.indexOf('ou')!=-1)){
 
-    word = word.replace('た','ta');
-    word = word.replace('ち','chi');
-    word = word.replace('つ','tsu');
-    word = word.replace('て','te');
-    word = word.replace('と','to');
-    word = word.replace('タ','ta');
-    word = word.replace('チ','chi');
-    word = word.replace('ツ','tsu');
-    word = word.replace('テ','te');
-    word = word.replace('ト','to');
+      word = word.replace('aa','ā');
+      word = word.replace('ii','ī');
+      word = word.replace('uu','ū');
+      word = word.replace('oo','ō');
+      word = word.replace('ou','ō');
 
-    word = word.replace('だ','da');
-    word = word.replace('ぢ','ji');
-    word = word.replace('づ','zu');
-    word = word.replace('で','de');
-    word = word.replace('ど','do');
-    word = word.replace('ダ','da');
-    word = word.replace('ヂ','ji');
-    word = word.replace('ヅ','zu');
-    word = word.replace('デ','de');
-    word = word.replace('ド','do');
-
-    word = word.replace('な','na');
-    word = word.replace('に','ni');
-    word = word.replace('ぬ','nu');
-    word = word.replace('ね','ne');
-    word = word.replace('の','no');
-    word = word.replace('ナ','na');
-    word = word.replace('ニ','ni');
-    word = word.replace('ヌ','nu');
-    word = word.replace('ネ','ne');
-    word = word.replace('ノ','no');
-
-    word = word.replace('は','ha');
-    word = word.replace('ひ','hi');
-    word = word.replace('ふ','fu');
-    word = word.replace('へ','he');
-    word = word.replace('ほ','ho');
-    word = word.replace('ハ','ha');
-    word = word.replace('ヒ','hi');
-    word = word.replace('フ','fu');
-    word = word.replace('ヘ','he');
-    word = word.replace('ホ','ho');
-
-    word = word.replace('ば','ba');
-    word = word.replace('び','bi');
-    word = word.replace('ぶ','bu');
-    word = word.replace('べ','be');
-    word = word.replace('ぼ','bo');
-    word = word.replace('バ','ba');
-    word = word.replace('ビ','bi');
-    word = word.replace('ブ','bu');
-    word = word.replace('ベ','be');
-    word = word.replace('ボ','bo');
-
-    word = word.replace('ぱ','pa');
-    word = word.replace('ぴ','pi');
-    word = word.replace('ぷ','pu');
-    word = word.replace('ぺ','pe');
-    word = word.replace('ぽ','po');
-    word = word.replace('パ','pa');
-    word = word.replace('ピ','pi');
-    word = word.replace('プ','pu');
-    word = word.replace('ペ','pe');
-    word = word.replace('ポ','po');
-
-    word = word.replace('ま','ma');
-    word = word.replace('み','mi');
-    word = word.replace('む','mu');
-    word = word.replace('め','me');
-    word = word.replace('も','mo');
-    word = word.replace('マ','ma');
-    word = word.replace('ミ','mi');
-    word = word.replace('ム','mu');
-    word = word.replace('メ','me');
-    word = word.replace('モ','mo');
-
-    word = word.replace('や','ya');
-    word = word.replace('ゆ','yu');
-    word = word.replace('よ','yo');
-    word = word.replace('ヤ','ya');
-    word = word.replace('ユ','yu');
-    word = word.replace('ヨ','yo');
-
-    word = word.replace('ら','ra');
-    word = word.replace('り','ri');
-    word = word.replace('る','ru');
-    word = word.replace('れ','re');
-    word = word.replace('ろ','ro');
-    word = word.replace('ラ','ra');
-    word = word.replace('リ','ri');
-    word = word.replace('ル','ru');
-    word = word.replace('レ','re');
-    word = word.replace('ロ','ro');
-
-    word = word.replace('わ','wa');
-    word = word.replace('を','wo');
-    word = word.replace('ワ','wa');
-    word = word.replace('ヲ','wo');
-
-    word = word.replace('ん','n');
-    word = word.replace('ン','n');
-
-    word = word.replace('aa','ā');
-    word = word.replace('ii','ī');
-    word = word.replace('uu','ū');
-    word = word.replace('oo','ō');
-    word = word.replace('ou','ō');
+    }
 
     return word;
+}
+
+function getMultiGroup(user_id,groupList){
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "/JapanReview/Service/Action.php",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "processData": false,
+    "data": "{\"action\":\"getMultiGroup\",\"user_id\":\""+user_id+"\",\"group_id\":["+groupList+"]}"
+  }
+  
+  $.ajax(settings).done(function (response) {
+    console.log(response);
+  });
 }

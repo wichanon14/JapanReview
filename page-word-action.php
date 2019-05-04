@@ -82,6 +82,9 @@ session_start();
             }
 
         </script>
+
+        <?php require_once('header.php'); ?>
+
         <div class="container">
             <div class="row" style="margin-top:7em;">
                 <div class="col-sm-3"></div>
