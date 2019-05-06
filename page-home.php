@@ -7,7 +7,9 @@
     <body class="bg-dark">
         <?php require_once('header.php'); ?>
         <div class="container text-center mt-5">
-            <img  src="./img/logo.png"/>
+            <div >
+                <img  src="./img/logo.png" style="width:100%;"/>
+            </div>
         </div>
     </body>
 </html>

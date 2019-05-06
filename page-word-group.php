@@ -22,10 +22,12 @@
         getAllWord(null,'existData');
         var searchResult=[];
         function searchFromAPI(obj){
+            showLoading();
             let request = new XMLHttpRequest();
             request.open("GET", "https://cors.io/?https://jisho.org/api/v1/search/words?keyword="+$(obj).val(), true);
             request.onload = () => {
                 var response = JSON.parse(request.responseText);
+                
                 var defaultLabel = '<li class="insert list-group-item d-flex justify-content-between align-items-center bg-dark text-white">'+
                         '<span class="font-weight-bold">Search Result</span></li>';
                     /*<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">
@@ -48,9 +50,12 @@
 
                         
                     }
-                    
+                    console.log(searchResult[i].senses[0].english_definitions[0]);
                 }
-                $('#result-words-search').html(defaultLabel);
+                $('#result-words-search').css('background','');
+                if($('#result-words-search > li ').length < 2){
+                    $('#result-words-search').html(defaultLabel);
+                }
                 //console.log(response.data[0].japanese[0].word);
             }
             request.send();
@@ -161,8 +166,20 @@
             $('#result-words-search').html(defaultLabel);
         }
 
+        function showLoading(){
+            var template = '<li class="insert list-group-item d-flex justify-content-between align-items-center bg-dark text-white">'.concat(
+                                '<span class="font-weight-bold">Search Result</span>',
+                            '</li>',
+                            '<div class="text-center mt-4">',
+                                '<img src="./img/puff.svg" width="50"/>',
+                            '</div>');
+            $('#result-words-search').css('background-color','#a0a0a0');
+            $('#result-words-search').html(template);
+        }
 
         getGroupList('list-group',user_id,'');
+        
+        
     </script>
     
     <?php require_once('header.php') ?>
@@ -210,6 +227,7 @@
                             <li class="insert list-group-item d-flex justify-content-between align-items-center bg-dark text-white">
                                 <span class="font-weight-bold">Search Result</span>
                             </li>
+                                                        
                             <!--li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">
                                 ひらがな
                             </li-->
@@ -219,7 +237,7 @@
                 
                 <div class="row ml-1" style="margin-top:50px;">
                     <div>
-                        <h2>
+                        <h3>
                             <div class="Label">
                                 <span id="group-name">
                                     Group Name
@@ -238,11 +256,11 @@
                                 </label>
                             </div>
                             <div class="hide edit-Label">
-                                <input type="text" value="Group Name" />
-                                <i class="fa fa-check clickable" onclick="save('Label','group-name')"></i>
+                                <input name="Group_Name" type="text" value="Group Name" size="13"/>
+                                <i class="fa fa-check clickable" onclick="save('Label','group-name');"></i>
                             </div>
 
-                        </h2>
+                        </h3>
                     </div>
                     
                     <div class="col-sm-4 mt-2 mb-2 hide font-weight-bold" id="result-save">

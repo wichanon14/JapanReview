@@ -24,7 +24,7 @@ function save(id,subid){
 
 function deleteItem(array_data,data_id,result_id){
     var datas = array_data.filter(function(item){
-        return item.data_id !== data_id+'';
+        return item.data_id+'' !== data_id+'';
     });
 
     words = datas;
@@ -296,7 +296,7 @@ function AddWord(id){
           "Content-Type": "application/json"
         },
         "processData": false,
-        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+$('input[name=searchForm]').val()+"\",\"user_id\":\""+user_id+"\"}"
+        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+searchResult[id].senses[0].english_definitions[0]+"\",\"user_id\":\""+user_id+"\"}"
       }
       
       $.ajax(settings).done(function (response) {
@@ -315,7 +315,7 @@ function AddToGroup(id,number_result_id){
           "Content-Type": "application/json"
         },
         "processData": false,
-        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+$('input[name=searchForm]').val()+"\",\"user_id\":\""+user_id+"\"}"
+        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+searchResult[id].senses[0].english_definitions[0]+"\",\"user_id\":\""+user_id+"\"}"
       }
       
       $.ajax(settings).done(function (response) {

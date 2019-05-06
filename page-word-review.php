@@ -17,7 +17,6 @@
             var groupList = [];
             var groupSelect = '';
             var user_id = '<?php echo $_SESSION['user-id']; ?>';
-            getGroupList('groupList',user_id,'');
 
             function onSelectGroup(obj){
                 var group_id = $(obj).attr('data-id');
@@ -39,6 +38,10 @@
                 }
             }
 
+            function onSelectAll(){
+                
+            }
+
             function checkExistList(id){
                 var obj=groupList.find(function(item){
                     return item === id;
@@ -56,6 +59,9 @@
                 $('#on-review').removeClass('hide');
                 getMultiGroup(user_id,groupList);
             }
+
+            getGroupList('groupList',user_id,'');
+
         </script>
         <div class="container" style="margin-top:10em;">
             <div class="row" id="input-review">
