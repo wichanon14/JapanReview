@@ -155,7 +155,7 @@ function getAllWord(id,data){
           "Content-Type": "application/json",
         },
         "processData": false,
-        "data": "{\"action\":\"getAllWord\"}"
+        "data": "{\"action\":\"getAllWord\",\"user_id\":\""+user_id+"\"}"
       }
       
       $.ajax(settings).done(function (response) {
@@ -276,7 +276,7 @@ function searchWord(keyword){
           "Content-Type": "application/json",
         },
         "processData": false,
-        "data": "{\"action\":\"SearchWord\",\"keyword\":\""+keyword+"\"}"
+        "data": "{\"action\":\"SearchWord\",\"keyword\":\""+keyword+"\",\"user_id\":\""+user_id+"\"}"
       }
       
       $.ajax(settings).done(function (response) {
@@ -296,7 +296,7 @@ function AddWord(id){
           "Content-Type": "application/json"
         },
         "processData": false,
-        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+$('input[name=searchForm]').val()+"\"}"
+        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+$('input[name=searchForm]').val()+"\",\"user_id\":\""+user_id+"\"}"
       }
       
       $.ajax(settings).done(function (response) {
@@ -315,7 +315,7 @@ function AddToGroup(id,number_result_id){
           "Content-Type": "application/json"
         },
         "processData": false,
-        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+$('input[name=searchForm]').val()+"\"}"
+        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+$('input[name=searchForm]').val()+"\",\"user_id\":\""+user_id+"\"}"
       }
       
       $.ajax(settings).done(function (response) {
@@ -707,7 +707,7 @@ function signin(){
   var settings = {
     "async": true,
     "crossDomain": true,
-    "url": "http://localhost/JapanReview/Service/Action.php",
+    "url": "/JapanReview/Service/Action.php",
     "method": "POST",
     "headers": {
       "Content-Type": "application/json"

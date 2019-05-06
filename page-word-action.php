@@ -36,6 +36,7 @@ session_start();
         </style>
         <script>
             var existData;
+            var user_id = '<?php echo $_SESSION['user-id']; ?>';
             getAllWord(null,'existData');
             var searchResult=[];
             function searchFromAPI(obj){

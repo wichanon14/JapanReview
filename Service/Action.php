@@ -1,6 +1,7 @@
 <?php 
 header("Content-type:application/json");
 require_once('initial.php');
+require_once('All_php_function.php');
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -16,6 +17,11 @@ if ($conn->connect_error) {
         $action = $_POST['action'];
 
         if($action == "SearchWord"){
+            
+            if(isset($_POST['user_id'])){
+                $user_id = $_POST['user_id'];
+            }
+            
             if(isset($_POST['keyword'])){
 
                 $keyword = $_POST['keyword'];
@@ -34,6 +40,8 @@ if ($conn->connect_error) {
                     }
                     echo json_encode($results);
                     
+                    recordLogs($conn,$user_id,'Search Word >> '.$keyword);
+
                     mysqli_free_result($result);
                 }
                 
@@ -111,6 +119,10 @@ if ($conn->connect_error) {
 
         if($action == "getAllWord"){
 
+            if(isset($_POST['user_id'])){
+                $user_id = $_POST['user_id'];
+            }
+
             $sql = "SELECT * FROM `words` ";
             
             $result = $conn->query($sql);
@@ -122,7 +134,7 @@ if ($conn->connect_error) {
                     array_push($AllWords,$row);
                 }
                 echo json_encode($AllWords);
-                
+                recordLogs($conn,$user_id,'get All word');
                 mysqli_free_result($result);
             }
 
@@ -169,11 +181,14 @@ if ($conn->connect_error) {
                 values".substr($value,0,-1);
                 if($conn->query($sql)){
                     echo '{"msg":"Save Success"}';
+                    recordLogs($conn,$user_id,'update Group >> '.$group_id);
                 }else{
                     echo '{"msg":"Save Empty Group"}';
+                    recordLogs($conn,$user_id,'update Group >> '.$group_id);
                 }
 
             }else{
+
                 $sql = "INSERT INTO `group_detail`(user_id,group_name) values({$user_id},'{$groups->groupName}')";
                 
                 $conn->query($sql);
@@ -194,9 +209,11 @@ if ($conn->connect_error) {
 
                 if($result){
                     echo '{"msg":"Save Success"}';
+                    recordLogs($conn,$user_id,'add Group >> '.$group_id);
                     mysqli_free_result($result);
                 }else{
                     echo '{"msg":"Save Empty Group"}';
+                    recordLogs($conn,$user_id,'add Empty Group >> '.$group_id);
                 }
                 
                 $conn->query($sql);       
@@ -229,7 +246,7 @@ if ($conn->connect_error) {
                     array_push($Groups,$row);
                 }
                 echo json_encode($Groups);
-                
+                recordLogs($conn,$user_id,'get GroupList');
                 mysqli_free_result($result);
             }
 
@@ -261,6 +278,7 @@ if ($conn->connect_error) {
                     array_push($Groups,$row);
                 }
                 echo json_encode($Groups);
+                recordLogs($conn,$user_id,'get Group >> '.$group_id);
                 mysqli_free_result($result);
             }
             
@@ -286,6 +304,7 @@ if ($conn->connect_error) {
             $conn->query($sql);
 
             echo '{"msg":"Delete Success"}';
+            recordLogs($conn,$user_id,'delete Group >> '.$group_id);
 
         }
 
@@ -319,6 +338,10 @@ if ($conn->connect_error) {
                 $meaning = '';
             }
 
+            if(isset($_POST['user_id'])){
+                $user_id = $_POST['user_id'];   
+            }
+
             $sql = "SELECT ID FROM words WHERE KANJI = '{$kanji}'";
             $result = $conn->query($sql);
             
@@ -339,11 +362,13 @@ if ($conn->connect_error) {
                     $_SESSION['message'] = "{$kanji} was added on ". date("Y/m/d");
                     $_SESSION['add_result'] = "complete"; 
                     echo '{ "msg":"add successfull" ,"ID":'.$row['ID'].' }';
+                    recordLogs($conn,$user_id,'Add Word >> '.$kanji);
                 } else {
                     $_SESSION['message'] = "{$kanji} wasn't added on ". date("Y/m/d");
                     $_SESSION['add_result'] = "incomplete";
                     
                     echo '{ "msg":"add fail" }';
+                    recordLogs($conn,$user_id,'Add Word Fail');
                 }
 
             }else {
@@ -351,10 +376,9 @@ if ($conn->connect_error) {
                 $_SESSION['add_result'] = "incomplete";
                 
                 echo '{ "msg":"add fail" , "ID": '.$row['ID'].'}';
+                recordLogs($conn,$user_id,'Add Word Fail');
             }
 
-            
-        
         }
 
         if($action == "getMultiGroup"){
@@ -390,6 +414,7 @@ if ($conn->connect_error) {
                     array_push($Groups,$row);
                 }
                 echo json_encode($Groups);
+                recordLogs($conn,$user_id,'get MultiGroup >> '.$listGroup);
                 mysqli_free_result($result);
             }
             
@@ -410,8 +435,10 @@ if ($conn->connect_error) {
 
                 if($conn->query($sql)){
                     echo '{ "msg":"Success! Delete all"}';
+                    recordLogs($conn,$user_id,'delete All Group ');
                 }else{
                     echo '{ "msg":"Fail Delete all"}';
+                    recordLogs($conn,$user_id,'Fail delete All Group ');
                 }
 
             }
@@ -434,8 +461,10 @@ if ($conn->connect_error) {
 
             if($conn->query($sql)){
                 echo '{ "msg":"Success! Delete all"}';
+                recordLogs($conn,$user_id,'delete all word in group >> '.$group_id);
             }else{
                 echo '{ "msg":"Fail Delete all"}';
+                recordLogs($conn,$user_id,'Fail delete all word in group >> '.$group_id);
             }
 
         }
@@ -483,16 +512,21 @@ if ($conn->connect_error) {
 
                 if($conn->query($sql)){
                     echo '{"msg":"Register Successfull"}';
+                    recordLogs($conn,$user_id,' Registered Successfull');
                 }else{
                     echo '{"msg":"Register Fail"}';
+                    recordLogs($conn,$user_id,' Registered Fail');
                 }
             }else{
                 if($isUsernameExist>0){
                     echo '{"msg":"This username already exist!"}';
+                    recordLogs($conn,$user_id,' Registered This username already exist!');
                 }else if($password != $confirm_password){
                     echo '{"msg":"Your password is not match!"}';
+                    recordLogs($conn,$user_id,' Registered This password is not match!');
                 }else if($isEmailExist>0){
                     echo '{"msg":"This email already exist!"}';
+                    recordLogs($conn,$user_id,' Registered This email already exist!');
                 }
                 
                 
@@ -516,6 +550,8 @@ if ($conn->connect_error) {
             }else{
                 echo '{"msg":true}';
             }
+            recordLogs($conn,$_SESSION['user-id'],'Check email Exist >> '.$email);
+            mysqli_free_result($result);
 
         }
 
@@ -534,6 +570,8 @@ if ($conn->connect_error) {
             }else{
                 echo '{"msg":true}';
             }
+            recordLogs($conn,$_SESSION['user-id'],'Check email Exist >> '.$email);
+            mysqli_free_result($result);
 
         }
 
@@ -555,8 +593,11 @@ if ($conn->connect_error) {
                 $_SESSION['user-id'] = $row['user_id'];
                 $_SESSION['username'] = $row['username'];
                 echo '{"user-id":"'.$_SESSION['user-id'].'"}';
+                recordLogs($conn,$row['user_id'],'Sign In Successful');
+
             }else{
                 $_SESSION['user-id'] = '';
+                recordLogs($conn,$row['user_id'],'Sign In Fail');
             }
 
         }
