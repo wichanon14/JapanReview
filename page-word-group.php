@@ -1,5 +1,9 @@
 <?php 
     session_start();
+
+    if(!$_SESSION['user-id']){
+        header('Location: ./page-home.php');
+    }
 ?>
 <!DOCTYPE html>
 <html lang="jp">
@@ -14,6 +18,7 @@
         var words = [];
         var groupSelect = "";
         var existData;
+        var user_id = '<?php echo $_SESSION['user-id']; ?>';
         getAllWord(null,'existData');
         var searchResult=[];
         function searchFromAPI(obj){
@@ -28,6 +33,7 @@
                     </li>*/
                 searchResult = response.data;
                 for(var i=0;i<response.data.length;i++){
+                    searchResult[i].KANJI = searchResult[i].japanese[0].word;
                     if(response.data[i].japanese[0].word){
                         var addCase = '<span class="badge badge-pill"><i data-id='.concat(i,
                         ' class="text-dark font-large fa fa-plus clickable" onclick="addGroup(',i,')"></i></span>');
@@ -52,7 +58,6 @@
 
         function onSelectGroup(obj){
 
-            var user_id=1;
             var group_id = $(obj).attr('data-id');
             $('#save-btn').attr('group-id',group_id);
             $('#save-btn').attr('user-id',user_id);
@@ -71,7 +76,6 @@
         // Adding Group
         function onAddGroup(obj){
 
-            var user_id=1;
             var group_id = 0;
             $('#save-btn').attr('group-id',group_id);
             $('#save-btn').attr('user-id',user_id);
@@ -89,15 +93,15 @@
         //Save group after edit or added word.
         function saveGroupOnPage(obj){
             var group_id = $('#save-btn').attr('group-id');
-            var user_id = $('#save-btn').attr('user-id');
         
             if(groupSelect+"" === "0"){    
                 $('#group-manage-addword').removeClass('show');
                 $('#group-manage-addword').addClass('hide');
+            }else{
+                $('#search-group').val('');
             }
 
             saveGroup('result-save',user_id,group_id,'group-name');
-            getGroupList('list-group',user_id,'');
             
         }
 
@@ -109,7 +113,7 @@
         // check new search word with exist word 
         function checkExist(data,kanji){
             for(var i=0;i<data.length;i++){
-                if(data[i].KANJI === kanji){
+                if(data[i].word === kanji){
                     return true
                 }
             }
@@ -118,10 +122,47 @@
 
         //Add word to group
         function addGroup(id){
-            AddToGroup(id,'number-word');
+            
+            if(!checkExist(words,searchResult[id].japanese[0].word)){
+                console.log(words);
+                AddToGroup(id,'number-word');
+            }else{
+                $('#add_status').removeClass('hide');
+                $('#add_status').addClass('show');
+                setTimeout(function(){
+                    $('#add_status').addClass('hide');
+                    $('#add_status').removeClass('show');
+                },1000);
+            }
+
         }
 
-        getGroupList('list-group',1,'');
+        function updatelist(){
+            var defaultLabel = '<li class="insert list-group-item d-flex justify-content-between align-items-center bg-dark text-white">'+
+                        '<span class="font-weight-bold">Search Result</span></li>';
+
+            for(var i=0;i<searchResult.length;i++){
+                
+                if(searchResult[i].japanese[0].word){
+                    var addCase = '<span class="badge badge-pill"><i data-id='.concat(i,
+                    ' class="text-dark font-large fa fa-plus clickable" onclick="addGroup(',i,')"></i></span>');
+                        
+                    if(checkExist(words,searchResult[i].japanese[0].word)){
+                        defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">'.concat(
+                        searchResult[i].japanese[0].word,' (',searchResult[i].japanese[0].reading,')</li>');
+                    }else{
+                        defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">'.concat(
+                        searchResult[i].japanese[0].word,' (',searchResult[i].japanese[0].reading,')',addCase,'</li>');
+                    }
+           
+                }
+                
+            }
+            $('#result-words-search').html(defaultLabel);
+        }
+
+
+        getGroupList('list-group',user_id,'');
     </script>
     
     <?php require_once('header.php') ?>
@@ -132,11 +173,16 @@
                 <div class="mt-3">
                     <h2>
                         List Group
-                        <i class="fa fa-plus clickable font-large text-primary" onclick="onAddGroup(this)"></i>
+                        <label title="Add Group">
+                            <i class="fa fa-plus clickable font-large text-primary" onclick="onAddGroup(this)"></i>
+                        </label>
+                        <label title="Delete All Group">
+                            <i class="fa fa-trash clickable font-large text-primary" user-id="<?php echo $_SESSION['user-id']; ?>" onclick="deleteAllGroup(this)"></i>
+                        </label>
                     </h2>
                 </div>
                 <div class="row ml-1 mb-2">
-                    <input class="form-control col-sm-11" type="text" placeholder="Search Group" oninput="onSearchGroupList('list-group',1,this.value)"/>
+                    <input class="form-control col-sm-11" id="search-group" type="text" placeholder="Search Group" oninput="onSearchGroupList('list-group',1,this.value)"/>
 
                 </div>
                 <div id="list-group" class="list-group scrollbar-custom" style="height:197px;overflow-y:auto;">
@@ -178,9 +224,18 @@
                                 <span id="group-name">
                                     Group Name
                                 </span>
-                                <span id="number-word" class="badge badge-dark badge-pill" style="font-size:0.4em;">14</span>
-                                <i class="fa fa-pencil clickable font-large text-primary" onclick="editWord('Label')"></i>
-                                <i class="fa fa-save clickable font-large text-primary" id="save-btn" onclick="saveGroupOnPage(this)"></i>
+                                <label title="Number of word">
+                                    <span id="number-word" class="badge badge-dark badge-pill" style="font-size:0.4em;">14</span>
+                                </label>
+                                <label title="Edit Group Name">
+                                    <i class="fa fa-pencil clickable font-large text-primary" onclick="editWord('Label')"></i>
+                                </label>
+                                <label title="Save Group">
+                                    <i class="fa fa-save clickable font-large text-primary" id="save-btn" onclick="saveGroupOnPage(this)"></i>
+                                </label>    
+                                <label title="Delete All Word">
+                                    <i class="fa fa-trash clickable font-large text-primary" onclick="deleteAllInGroup()"></i>
+                                </label>
                             </div>
                             <div class="hide edit-Label">
                                 <input type="text" value="Group Name" />

@@ -395,6 +395,172 @@ if ($conn->connect_error) {
             
 
         }
+    
+        if($action == 'deleteAllGroup'){
+
+            if(isset($_POST['user_id'])){
+                $user_id = $_POST['user_id'];
+            }
+
+            $sql = "DELETE FROM group_word_relation where group_id in 
+            ( select ID FROM group_detail where user_id = {$user_id} )";
+
+            if($conn->query($sql)){
+                $sql = "DELETE FROM group_detail where user_id = {$user_id}";                
+
+                if($conn->query($sql)){
+                    echo '{ "msg":"Success! Delete all"}';
+                }else{
+                    echo '{ "msg":"Fail Delete all"}';
+                }
+
+            }
+
+        }
+        
+        if($action == 'deleteAllWordInGroup'){
+
+            if(isset($_POST['user_id'])){
+                $user_id = $_POST['user_id'];
+            }
+
+            if(isset($_POST['group_id'])){
+                $group_id = $_POST['group_id'];
+            }
+
+            $sql = "DELETE FROM group_word_relation where group_id = {$group_id} and group_id in (
+                SELECT ID FROM group_detail WHERE user_id = {$user_id}
+            )";
+
+            if($conn->query($sql)){
+                echo '{ "msg":"Success! Delete all"}';
+            }else{
+                echo '{ "msg":"Fail Delete all"}';
+            }
+
+        }
+
+        if($action == 'membership-signup'){
+
+            if(isset($_POST['username'])){
+                $username = $_POST['username'];
+            }
+
+            if(isset($_POST['password'])){
+                $password = $_POST['password'];
+            }
+
+            if(isset($_POST['confirm_password'])){
+                $confirm_password = $_POST['confirm_password'];
+            }
+
+            if(isset($_POST['email'])){
+                $email = $_POST['email'];
+            }
+
+            $sql = "SELECT ID FROM user_detail ORDER BY ID DESC LIMIT 1";
+            $result = $conn->query($sql);
+            $row = $result->fetch_assoc();
+
+            $month = (getdate()['mon']<10)?str_pad(getdate()['mon'], 2, "0", STR_PAD_LEFT):getdate()['mon'];
+            $date = (getdate()['mday']<10)?str_pad(getdate()['mday'], 2, "0", STR_PAD_LEFT):getdate()['mday'];
+            $user_id = getdate()['year'].$month.$date.($row['ID']+1);
+
+            $sql = "SELECT count(*) as member FROM user_detail WHERE username = '{$username}'";
+            $result = $conn->query($sql);
+            $row = $result->fetch_assoc();
+            $isUsernameExist = $row['member'];
+
+            $sql = "SELECT count(*) as member FROM user_detail WHERE email = '{$email}'";
+            $result = $conn->query($sql);
+            $row = $result->fetch_assoc();
+            $isEmailExist = $row['member'];
+
+            if($password == $confirm_password && $isEmailExist<1&&$isUsernameExist<1){
+                $sql = "INSERT INTO user_detail(user_id,username,password,email) VALUES( 
+                    {$user_id},'{$username}','{$password}','{$email}'
+                )";
+
+                if($conn->query($sql)){
+                    echo '{"msg":"Register Successfull"}';
+                }else{
+                    echo '{"msg":"Register Fail"}';
+                }
+            }else{
+                if($isUsernameExist>0){
+                    echo '{"msg":"This username already exist!"}';
+                }else if($password != $confirm_password){
+                    echo '{"msg":"Your password is not match!"}';
+                }else if($isEmailExist>0){
+                    echo '{"msg":"This email already exist!"}';
+                }
+                
+                
+            }
+            mysqli_free_result($result);
+
+        }
+
+        if($action == 'check_email_exist'){
+
+            if(isset($_POST['email'])){
+                $email = $_POST['email'];
+            }
+
+            $sql = "SELECT count(*) as n FROM user_detail WHERE email = '{$email}'";
+            $result = $conn->query($sql);
+            $row = $result->fetch_assoc();
+
+            if($row['n']<1){
+                echo '{"msg":false}';
+            }else{
+                echo '{"msg":true}';
+            }
+
+        }
+
+        if($action == 'check_username_exist'){
+
+            if(isset($_POST['username'])){
+                $username = $_POST['username'];
+            }
+
+            $sql = "SELECT count(*) as n FROM user_detail WHERE username = '{$username}'";
+            $result = $conn->query($sql);
+            $row = $result->fetch_assoc();
+
+            if($row['n']<1){
+                echo '{"msg":false}';
+            }else{
+                echo '{"msg":true}';
+            }
+
+        }
+
+        if($action == 'sign_in'){
+
+            if(isset($_POST['username'])){
+                $username = $_POST['username'];
+            }
+
+            if(isset($_POST['password'])){
+                $password = $_POST['password'];
+            }
+
+            $sql = "SELECT user_id,username FROM user_detail WHERE username = '{$username}' AND password = '{$password}'";
+            $result = $conn->query($sql);
+
+            if($result){                
+                $row = $result->fetch_assoc();
+                $_SESSION['user-id'] = $row['user_id'];
+                $_SESSION['username'] = $row['username'];
+                echo '{"user-id":"'.$_SESSION['user-id'].'"}';
+            }else{
+                $_SESSION['user-id'] = '';
+            }
+
+        }
+
     }else{
         
     } 

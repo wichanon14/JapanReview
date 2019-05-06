@@ -1,6 +1,8 @@
 <?php 
     // get url in php
+    session_start();
     $url = $_SERVER[REQUEST_URI];
+
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         
@@ -30,36 +32,49 @@
             </ul>
         </div>
 
-        <!-- Sign In Module -->
-        <div class="nav-item dropdown my-2 my-lg-0">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Sign In
-            </a>
-            <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink" style="width:21em;margin-left:-15em;">
-                <div class="row mt-3"></div>
-                <div class="row">
-                    <div class="col-sm-4 mt-1 ml-4 mr-1 text-light">
-                        <span>Username :</span>
+        <?php if(!$_SESSION['user-id']) : ?>
+            <!-- Sign In Module -->
+            <div class="nav-item dropdown my-2 my-lg-0" style="margin-right:5em;">
+                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sign In
+                </a>
+                <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink" style="width:21em;margin-left:-15em;">
+                    <div class="row mt-3"></div>
+                    <div class="row">
+                        <div class="col-sm-4 mt-1 ml-4 mr-1 text-light">
+                            <span>Username :</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <input name="username_sign_in" class="form-control" type="input" />
+                        </div>
                     </div>
-                    <div class="col-sm-6">
-                        <input class="form-control" type="input" />
+                    <div class="row mt-3"></div>
+                    <div class="row">
+                        <div class="col-sm-4 mt-1 ml-4 mr-1 text-light">
+                            <span>Password :</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <input name="password_sign_in" class="form-control" type="password" />
+                        </div>
                     </div>
-                </div>
-                <div class="row mt-3"></div>
-                <div class="row">
-                    <div class="col-sm-4 mt-1 ml-4 mr-1 text-light">
-                        <span>Password :</span>
-                    </div>
-                    <div class="col-sm-6">
-                        <input class="form-control" type="password" />
-                    </div>
-                </div>
-                <div class="row mt-3" style="margin-left:63%;">
-                    <div class="col-sm-5">
-                        <button class="btn btn-outline-light" type="button">Sign In</button>
+                    <div class="row mt-3" style="margin-left:40%;">
+                        <div class="col-sm-5">
+                            <a href="./page-member-signup.php"><button class="btn btn-outline-light" type="button" >Sign Up</button></a>
+                        </div>
+                        <div class="col-sm-5">
+                            <button class="btn btn-outline-light" type="button" onclick="signin()">Sign In</button>
+                        </div>
                     </div>
                 </div>
             </div>
+        <?php else: ?>
+        <div class="btn-group mt-2" style="margin-right:5em;">
+            <button type="button" class="btn btn-secondary bg-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?php echo $_SESSION['username']; ?>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a href="./page-member-signout.php"><button class="dropdown-item" type="button">Sign Out</button></a>
+            </div>
         </div>
-
+        <?php endif ?>
     </nav>

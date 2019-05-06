@@ -1,3 +1,10 @@
+<?php 
+    session_start();
+
+    if(!$_SESSION['user-id']){
+        header('Location: ./page-home.php');
+    }
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,8 +16,8 @@
         <script>
             var groupList = [];
             var groupSelect = '';
-
-            getGroupList('groupList',1,'');
+            var user_id = '<?php echo $_SESSION['user-id']; ?>';
+            getGroupList('groupList',user_id,'');
 
             function onSelectGroup(obj){
                 var group_id = $(obj).attr('data-id');
@@ -47,7 +54,7 @@
             function review(){
                 $('#input-review').addClass('hide');
                 $('#on-review').removeClass('hide');
-                getMultiGroup(1,groupList);
+                getMultiGroup(user_id,groupList);
             }
         </script>
         <div class="container" style="margin-top:10em;">

@@ -93,7 +93,7 @@ function deleteGroup(obj){
               "Content-Type": "application/json",
             },
             "processData": false,
-            "data": "{\"action\":\"deleteGroup\",\"user_id\":\"1\",\"group_id\":\""+$(obj).attr('data-id')+"\"}"
+            "data": "{\"action\":\"deleteGroup\",\"user_id\":\""+user_id+"\",\"group_id\":\""+$(obj).attr('data-id')+"\"}"
           }
           
           $.ajax(settings).done(function (response) {
@@ -101,6 +101,48 @@ function deleteGroup(obj){
                 window.location.reload();
           });
     }
+}
+
+function deleteAllGroup(obj){
+  if(confirm("Are you sure for delete all group")){
+      var settings = {
+          "async": true,
+          "crossDomain": true,
+          "url": "/JapanReview/Service/Action.php",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json",
+          },
+          "processData": false,
+          "data": "{\"action\":\"deleteAllGroup\",\"user_id\":\""+$(obj).attr('user-id')+"\"}"
+        }
+        
+        $.ajax(settings).done(function (response) {
+
+              window.location.reload();
+        });
+  }
+}
+
+function deleteAllInGroup(){
+  if(confirm("Are you sure for delete all word that was contain in the group")){
+      var settings = {
+          "async": true,
+          "crossDomain": true,
+          "url": "/JapanReview/Service/Action.php",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json",
+          },
+          "processData": false,
+          "data": "{\"action\":\"deleteAllWordInGroup\",\"user_id\":\""+user_id+"\",\"group_id\":\""+groupSelect+"\"}"
+        }
+        
+        $.ajax(settings).done(function (response) {
+
+              window.location.reload();
+        });
+  }
 }
 
 function getAllWord(id,data){
@@ -207,14 +249,14 @@ function saveGroup(result_label_id,user_id,group_id,group_name_id){
       $.ajax(settings).done(function (response) {
             
             //$('#'+id).html(groupListFormat(response));
+            
             $('#'+result_label_id).addClass('text-success');
             $('#'+result_label_id).removeClass('hide');
             $('#'+result_label_id).addClass('show');
             $('#'+result_label_id).text(response.msg);
 
-            if(group_id+""==="0"){
-                window.location.reload();
-            }
+            getGroupList('list-group',user_id,'');
+
             setTimeout(function(){
                 $('#'+result_label_id).removeClass('text-success');
                 $('#'+result_label_id).removeClass('text-danger');
@@ -263,7 +305,7 @@ function AddWord(id){
       });
 }
 
-function AddToGroup(id,number_result){
+function AddToGroup(id,number_result_id){
     var settings = {
         "async": true,
         "crossDomain": true,
@@ -283,9 +325,9 @@ function AddToGroup(id,number_result){
             word: searchResult[id].japanese[0].word
         }
         words.splice(0, 0, data);
+        updatelist();
         $('#words').html(addGroupFormat(words));
-        $('li')[id+1].innerHTML = '<span>'.concat(searchResult[id].japanese[0].word,' (',searchResult[id].japanese[0].reading,')</span>');
-        $('#'+number_result).text(words.length);
+        $('#'+number_result_id).text(words.length);
       });
 }
 
@@ -578,5 +620,104 @@ function getMultiGroup(user_id,groupList){
   
   $.ajax(settings).done(function (response) {
     console.log(response);
+  });
+}
+
+function signup(){
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "/JapanReview/Service/Action.php",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "processData": false,
+    "data": "{\"action\":\"membership-signup\",\"username\":\""+$('input[name=username]').val()+"\",\"password\":\""+$('input[name=password]').val()+"\",\"confirm_password\":\""+$('input[name=confirm_password]').val()+"\",\"email\":\""+$('input[name=email]').val()+"\"}"
+  }
+  
+  $.ajax(settings).done(function (response) {
+    //console.log(response);
+    window.location.href="./page-home.php";
+  });
+}
+
+function check_email_exist_func(obj){
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "/JapanReview/Service/Action.php",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "processData": false,
+    "data": "{\"action\":\"check_email_exist\",\"email\":\""+$(obj).val()+"\"}"
+  }
+  
+  $.ajax(settings).done(function (response) {
+    //console.log(response);
+    check_email_exist = response['msg'];
+    if(response['msg']){
+      $($(obj).parent().parent()).children('span').removeClass('hide');
+    }else{
+      $($(obj).parent().parent()).children('span').addClass('hide');
+    }
+
+  });
+}
+
+function check_username_exist_func(obj){
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "/JapanReview/Service/Action.php",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+    },
+    "processData": false,
+    "data": "{\"action\":\"check_username_exist\",\"username\":\""+$('input[name=username]').val()+"\"}"
+  }
+  
+  $.ajax(settings).done(function (response) {
+    //console.log(response);
+    check_username_exist = response['msg'];
+
+    $(obj).parent().parent().children('span').removeClass('hide');
+    if(!check_username_exist){
+        $(obj).parent().parent().children('span').removeClass('text-danger');
+        $(obj).parent().parent().children('span').addClass('text-dark');
+        $(obj).parent().parent().children('span').text("Username length mustn't over 12 character");
+    }else{
+        $(obj).parent().parent().children('span').removeClass('text-dark');
+        $(obj).parent().parent().children('span').addClass('text-danger');
+        $(obj).parent().parent().children('span').text("Your username had already exist!");
+    }
+
+  });
+}
+
+function validateEmail(email) {
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+
+function signin(){
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost/JapanReview/Service/Action.php",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "processData": false,
+    "data": "{\"action\":\"sign_in\",\"username\":\""+$('input[name=username_sign_in]').val()+"\",\"password\":\""+$('input[name=password_sign_in]').val()+"\"}"
+  }
+  
+  $.ajax(settings).done(function (response) {
+    //console.log(response);
+    window.location.href="./page-home.php";
   });
 }
