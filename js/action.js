@@ -619,7 +619,8 @@ function getMultiGroup(user_id,groupList){
   }
   
   $.ajax(settings).done(function (response) {
-    console.log(response);
+    wordList = response;
+    wordList = createRandomWord(wordList);
   });
 }
 

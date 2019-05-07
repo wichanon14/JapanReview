@@ -16,6 +16,7 @@
         <script>
             var groupList = [];
             var groupSelect = '';
+            var wordList = [];
             var user_id = '<?php echo $_SESSION['user-id']; ?>';
 
             function onSelectGroup(obj){
@@ -36,10 +37,7 @@
                         groupList.push(group_id);
                     }
                 }
-            }
-
-            function onSelectAll(){
-                
+                checkSelectAllStatus();
             }
 
             function checkExistList(id){
@@ -54,10 +52,111 @@
                 }
             }
 
-            function review(){
+            function setMode(){
                 $('#input-review').addClass('hide');
-                $('#on-review').removeClass('hide');
-                getMultiGroup(user_id,groupList);
+                $('#mode').removeClass('hide');
+                getMultiGroup(user_id,groupList);   
+                $('#wordStatus').attr('word_index',-1);
+            }
+
+            function selectAll(obj){
+                if($(obj).attr('status')){
+                    if($(obj).attr('status')==='true'){
+                        $(obj).attr('status','false');
+                        $(obj).html('Select All');
+                        $('#groupList > a').removeClass('active');
+                        groupList=[];
+
+                    }else{
+                        $(obj).attr('status','true');
+                        $(obj).html('Unselect All');
+                        $('#groupList > a').addClass('active');
+                        pushAll();
+                        
+                    }
+                }else{
+                    $(obj).attr('status','true');
+                    $(obj).html('Unselect All');
+                    $('#groupList > a').addClass('active');
+                    pushAll();
+
+                }
+            }
+
+            function pushAll(){
+
+                for(var i=0;i<$('#groupList > a').length;i++){
+                    var group_id = $($('#groupList > a')[i]).attr('data-id');
+                    if(!checkExistList(group_id)){
+                        groupList.push(group_id);
+                    }
+                }
+
+            }
+
+            function checkSelectAllStatus(){
+             
+                if(!$('#groupList > a').hasClass('active')){
+                    $('#selectAllBtn').attr('status','false');
+                    $('#selectAllBtn').html('Select All');
+                }else{
+                    var element = $('#groupList > a');
+                    var sumActive = 0;
+                    for(var i=0;i < element.length;i++){
+                        if($($(element)[i]).hasClass('active')){
+                            sumActive += 1;
+                        }
+                    }
+                    if(sumActive === element.length){
+                        $('#selectAllBtn').attr('status','true');
+                        $('#selectAllBtn').html('Unselect All');
+                    }
+                }
+            }
+
+            function createRandomWord(data){
+                
+                var result_randomGroup=[];
+
+                while(data.length>0){
+                    var index = parseInt(Math.random()*100)%data.length;
+                    result_randomGroup.push(data[index]);
+                    data.splice(index,1);
+                }
+                return result_randomGroup;
+            }
+
+            function showWord(index){
+                $('#question').html(wordList[index].KANJI);
+            }
+
+            function goBack(){         
+                var word_index = parseInt($('#wordStatus').attr('word_index'));
+                if(word_index <= 0){    
+                    showWord(0);
+                    $('#wordStatus').attr('word_index',0);
+                }else{
+                    showWord(word_index-1);
+                    $('#wordStatus').attr('word_index',word_index-1);
+                }
+            }
+
+            function goNext(){
+                var word_index = parseInt($('#wordStatus').attr('word_index'));
+                if(word_index === wordList.length-1){    
+                    showWord(word_index);
+                    $('#wordStatus').attr('word_index',word_index);
+                }else{
+                    showWord(word_index+1);
+                    $('#wordStatus').attr('word_index',word_index+1);
+                }
+             
+            }
+
+            function selectMode(obj){
+                var modeID = $(obj).attr('mode');
+                $('#mode').addClass('hide');
+                $('#'+modeID).removeClass('hide');
             }
 
             getGroupList('groupList',user_id,'');
@@ -68,7 +167,12 @@
                 <div class="col-sm-3"></div>
                 <div class="col-sm-6">
                     <div class="font-weight-bold text-center">
-                        <h2>SELECT YOUR GROUP FOR REVIEW</h2>
+                        <h2>
+                            <span>SELECT YOUR GROUP FOR REVIEW</span>
+                        </h2>
+                    </div>
+                    <div class="text-right mb-3">
+                        <button id="selectAllBtn" class="btn btn-dark" onclick="selectAll(this)">Select All</button>
                     </div>
                     <div id="groupList" class="border list-group scrollbar-custom" style="height:300px;" >
                         <a href="#" class="list-group-item list-group-item-action">
@@ -78,18 +182,61 @@
                         <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
                     </div>
                     <div class="text-center">
-                        <button class="btn btn-dark col-sm-6" onclick="review()">Review Word</button>
+                        <button class="btn btn-dark col-sm-6" onclick="setMode()">Review Word</button>
                     </div>
                 </div>
                 
             </div>
-            <div class="row hide" id="on-review">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-6">
-                    <div id="question">
-                        <h1>東</h1>
+            <div class=" hide" id="mode">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6 text-center">
+                        <div class="mb-4">
+                            <h2>
+                                <span>SELECT YOUR MODE</span>
+                            </h2>
+                        </div>
+                        <div>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="pic_kanji" onclick="selectMode(this)"
+                            >PICTURE -> KANJI</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
+                            >KANJI -> HIRAGANI / KATAKANA</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="kan_roma" onclick="selectMode(this)"
+                            >KANJI -> ROMANJI</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="kan_mean" onclick="selectMode(this)"
+                            >KANJI -> MEANING</button>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div class="hide" id="kan_hira">    
+                <div class="row" >
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6 text-center">
+                        <div id="question" style="font-size:128px;">
+                            Go!!
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <div class="text-left">
+                            <button class="btn btn-dark" onclick="goBack()">Back</button>
+                        </div>
+                        <div class="text-right" style="margin-top:-2.4em;">
+                            <button class="btn btn-dark" onclick="goNext()">Next</button>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div id="wordStatus" class="row hide"></div>
             </div>
         </div>
     </body>
