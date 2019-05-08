@@ -36,7 +36,7 @@
             <li class="nav-item 
             <?php echo (strpos($url,"group"))?'active':''; ?>
             ">
-                <a class="nav-link" href="./page-word-group.php">Learning Journey</a>
+                <a class="nav-link" href="./page-word-group.php">Grouping Journey</a>
             </li>
             <li class="nav-item
             <?php echo (strpos($url,"review"))?'active':''; ?>

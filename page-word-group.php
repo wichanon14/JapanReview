@@ -19,13 +19,16 @@
         var groupSelect = "";
         var existData;
         var user_id = '<?php echo $_SESSION['user-id']; ?>';
+        var resultGateway;
         getAllWord(null,'existData');
         var searchResult=[];
         function searchFromAPI(obj){
             showLoading();
+            resultGateway=true;
             let request = new XMLHttpRequest();
-            request.open("GET", "https://cors.io/?https://jisho.org/api/v1/search/words?keyword="+$(obj).val(), true);
+            request.open("GET", "https://cors.io/?https://jisho.org/api/v1/search/words?keyword="+$(obj).val()+" ", true);
             request.onload = () => {
+                
                 var response = JSON.parse(request.responseText);
                 
                 var defaultLabel = '<li class="insert list-group-item d-flex justify-content-between align-items-center bg-dark text-white">'+
@@ -34,28 +37,26 @@
                     response.data[i].japanese[0].word;
                     </li>*/
                 searchResult = response.data;
-                for(var i=0;i<response.data.length;i++){
+                for(var i=0;i<searchResult.length;i++){
                     searchResult[i].KANJI = searchResult[i].japanese[0].word;
-                    if(response.data[i].japanese[0].word){
+                    if(searchResult[i].japanese[0].word){
                         var addCase = '<span class="badge badge-pill"><i data-id='.concat(i,
                         ' class="text-dark font-large fa fa-plus clickable" onclick="addGroup(',i,')"></i></span>');
                          
-                        if(checkExist(words,response.data[i].japanese[0].word)){
+                        if(checkExist(words,searchResult[i].japanese[0].word)){
                             defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">'.concat(
-                            response.data[i].japanese[0].word,' (',response.data[i].japanese[0].reading,')</li>');
+                            searchResult[i].japanese[0].word,' (',searchResult[i].japanese[0].reading,')</li>');
                         }else{
                             defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">'.concat(
-                            response.data[i].japanese[0].word,' (',response.data[i].japanese[0].reading,')',addCase,'</li>');
+                            searchResult[i].japanese[0].word,' (',searchResult[i].japanese[0].reading,')',addCase,'</li>');
                         }
 
                         
                     }
-                    console.log(searchResult[i].senses[0].english_definitions[0]);
+                    //console.log(searchResult[i].senses[0].english_definitions[0]);
                 }
                 $('#result-words-search').css('background','');
-                if($('#result-words-search > li ').length < 2){
-                    $('#result-words-search').html(defaultLabel);
-                }
+                $('#result-words-search').html(defaultLabel);
                 //console.log(response.data[0].japanese[0].word);
             }
             request.send();
@@ -119,6 +120,7 @@
         function checkExist(data,kanji){
             for(var i=0;i<data.length;i++){
                 if(data[i].word === kanji){
+                    console.log(kanji);
                     return true
                 }
             }
@@ -129,7 +131,7 @@
         function addGroup(id){
             
             if(!checkExist(words,searchResult[id].japanese[0].word)){
-                console.log(words);
+                //console.log(words);
                 AddToGroup(id,'number-word');
             }else{
                 $('#add_status').removeClass('hide');
@@ -199,7 +201,8 @@
                     </h2>
                 </div>
                 <div class="row ml-1 mb-2">
-                    <input class="form-control col-sm-11" id="search-group" type="text" placeholder="Search Group" oninput="onSearchGroupList('list-group',1,this.value)"/>
+                    <input class="form-control col-sm-11" id="search-group" type="text" placeholder="Search Group" 
+                    onfocus="onSearchGroupList('list-group',1,this.value)"/>
 
                 </div>
                 <div id="list-group" class="list-group scrollbar-custom" style="height:197px;overflow-y:auto;">

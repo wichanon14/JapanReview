@@ -331,12 +331,26 @@ function AddToGroup(id,number_result_id){
       });
 }
 
+function isEnglist(word){
+  var english = /^[A-Za-z]/;
+  
+  for(var i=0;i<word.length;i++){
+    if(!english.test(word[i])){
+      console.log(word,'>>',false);
+      return false;
+    }
+  }
+  console.log(word,'>>',true);
+  return true;
+
+}
+
 function toRomanji(japaneseWord){
     var word = japaneseWord;
-    var english = /^[A-Za-z]/;
       
-    while(!english.test(word)){
+    while(!isEnglist(word)){
       word = word.replace(/ん/g, "n");
+      word = word.replace(/はっ/g,"has");
       word = word.replace(/きゃ/g, "kya");
       word = word.replace(/きゅ/g, "kyu");
       word = word.replace(/きょ/g, "kyo");
@@ -620,6 +634,7 @@ function getMultiGroup(user_id,groupList){
   
   $.ajax(settings).done(function (response) {
     wordList = response;
+    console.log(wordList[0]);
     wordList = createRandomWord(wordList);
   });
 }

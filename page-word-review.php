@@ -128,16 +128,16 @@
 
             function showWord(index){
                 $('#question').html(wordList[index].KANJI);
+                $('#order').html(index+1+"/"+wordList.length);
+                $('#wordStatus').attr('word_index',index);
             }
 
             function goBack(){         
                 var word_index = parseInt($('#wordStatus').attr('word_index'));
                 if(word_index <= 0){    
                     showWord(0);
-                    $('#wordStatus').attr('word_index',0);
                 }else{
                     showWord(word_index-1);
-                    $('#wordStatus').attr('word_index',word_index-1);
                 }
             }
 
@@ -145,10 +145,8 @@
                 var word_index = parseInt($('#wordStatus').attr('word_index'));
                 if(word_index === wordList.length-1){    
                     showWord(word_index);
-                    $('#wordStatus').attr('word_index',word_index);
                 }else{
                     showWord(word_index+1);
-                    $('#wordStatus').attr('word_index',word_index+1);
                 }
              
             }
@@ -159,13 +157,50 @@
                 $('#'+modeID).removeClass('hide');
                 $('#'+modeID).addClass('insert');
                 setTimeout(function(){
-                    goBack();
+                    showWord(0);
                 },1000);
+
+            }
+
+            function checkResult(){
+                var word_index = parseInt($('#wordStatus').attr('word_index'));
+                
+                if($('#answer').val() === wordList[word_index].HIRAGANA){
+                    $('#answerResult').html(
+                        '<div class="text-success">TRUE</div>'
+                    );
+                    setTimeout(function(){
+                        goNext();
+                        $('#answer').val('');
+                        $('#answerResult').html(
+                            'HIRAGANA'
+                        );
+                    },500);
+                }else{
+                    $('#answerResult').html(
+                        '<div class="text-danger">FALSE</div>'
+                    );
+                    setTimeout(function(){
+                        $('#answerResult').html(
+                            'HIRAGANA'
+                        );
+                    },500);
+                }
 
             }
 
             getGroupList('groupList',user_id,'');
 
+            $(document).ready(function(){
+                $('#answer').keypress(function(e){
+                    
+                    if(e.key === 'Enter'){
+                        checkResult();
+                    }
+                    
+                });
+            });
+            
         </script>
         <div class="container" style="margin-top:10em;">
             <div class="row" id="input-review">
@@ -207,7 +242,7 @@
                         </div>
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
-                            >KANJI -> HIRAGANI / KATAKANA</button>
+                            >KANJI -> HIRAGANA / KATAKANA</button>
                         </div>
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_roma" onclick="selectMode(this)"
@@ -216,6 +251,10 @@
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_mean" onclick="selectMode(this)"
                             >KANJI -> MEANING</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="mix_type" onclick="selectMode(this)"
+                            >MIX TYPE</button>
                         </div>
                     </div>
                 </div>
@@ -226,6 +265,9 @@
                     <div class="col-sm-6 text-center">
                         <div id="question" style="font-size:128px;">
                             Go!!
+                        </div>
+                        <div id="order">
+                            Ready ~
                         </div>
                     </div>
                 </div>
@@ -239,6 +281,26 @@
                             <button class="btn btn-dark" onclick="goNext()">Next</button>
                         </div>
                         
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <div id="answerResult" class="text-center">
+                            HIRAGANA
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <input id="answer" type="text" class="form-control text-center"/>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6 text-center">
+                        <input type="button" class="btn btn-dark" value="SUBMIT" onclick="checkResult()"/>
                     </div>
                 </div>
                 <div id="wordStatus" class="row hide"></div>
