@@ -157,6 +157,11 @@
                 var modeID = $(obj).attr('mode');
                 $('#mode').addClass('hide');
                 $('#'+modeID).removeClass('hide');
+                $('#'+modeID).addClass('insert');
+                setTimeout(function(){
+                    goBack();
+                },1000);
+
             }
 
             getGroupList('groupList',user_id,'');
