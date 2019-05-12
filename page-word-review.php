@@ -184,22 +184,34 @@
                     $('#answerResult').html(
                         '<div class="text-success">TRUE</div>'
                     );
+
+                    
                     setTimeout(function(){
-                        goNext();
-                        $('#answer').val('');
-                        $('#answerResult').html(
-                            'HIRAGANA'
-                        );
+                        if(word_index >= wordList.length-1){
+                            selectAll($('#selectAllBtn'));
+                            $('#input-review').removeClass('hide');
+                            $('#kan_hira').addClass('hide');
+                            $('#mode').addClass('hide');
+                        }else{
+                            goNext();
+                            $('#answer').val('');
+                            $('#answerResult').html(
+                                'HIRAGANA'
+                            );
+                        }
+                        
                     },500);
+
                 }else{
                     $('#answerResult').html(
-                        '<div class="text-danger">FALSE</div>'
+                        '<div class="text-danger">'+wordList[word_index].HIRAGANA+'</div>'
                     );
                     setTimeout(function(){
+                        goNext();
                         $('#answerResult').html(
                             'HIRAGANA'
                         );
-                    },500);
+                    },1000);
                 }
 
             }
