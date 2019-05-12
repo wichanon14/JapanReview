@@ -188,10 +188,10 @@
                     
                     setTimeout(function(){
                         if(word_index >= wordList.length-1){
-                            selectAll($('#selectAllBtn'));
                             $('#input-review').removeClass('hide');
                             $('#kan_hira').addClass('hide');
                             $('#mode').addClass('hide');
+                            selectAll($('#selectAllBtn'));
                         }else{
                             goNext();
                             $('#answer').val('');
