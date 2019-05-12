@@ -18,6 +18,7 @@
             var groupSelect = '';
             var wordList = [];
             var user_id = '<?php echo $_SESSION['user-id']; ?>';
+            var score = 0;
 
             function onSelectGroup(obj){
                 var group_id = $(obj).attr('data-id');
@@ -130,10 +131,23 @@
                 $('#question').html(wordList[index].KANJI);
                 $('#order').html(index+1+"/"+wordList.length);
                 $('#wordStatus').attr('word_index',index);
+
+                if(index === wordList.length-1){
+                    $('.btn-next').addClass('hide');
+                }else{
+                    $('.btn-next').removeClass('hide');
+                }
+                
+                if(index <= 0 ){
+                    $('.btn-prev').addClass('hide');
+                }else{
+                    $('.btn-prev').removeClass('hide');
+                }
             }
 
             function goBack(){         
                 var word_index = parseInt($('#wordStatus').attr('word_index'));
+                
                 if(word_index <= 0){    
                     showWord(0);
                 }else{
@@ -143,7 +157,8 @@
 
             function goNext(){
                 var word_index = parseInt($('#wordStatus').attr('word_index'));
-                if(word_index === wordList.length-1){    
+
+                if(word_index >= wordList.length-1){
                     showWord(word_index);
                 }else{
                     showWord(word_index+1);
@@ -274,12 +289,8 @@
                 <div class="row mb-4">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">
-                        <div class="text-left">
-                            <button class="btn btn-dark" onclick="goBack()">Back</button>
-                        </div>
-                        <div class="text-right" style="margin-top:-2.4em;">
-                            <button class="btn btn-dark" onclick="goNext()">Next</button>
-                        </div>
+                        <button class="btn btn-dark btn-prev pull-left hide" onclick="goBack()">Back</button>
+                        <button class="btn btn-dark btn-next pull-right hide" onclick="goNext()">Next</button>
                         
                     </div>
                 </div>
