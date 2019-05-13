@@ -332,8 +332,8 @@ function AddToGroup(id,number_result_id){
 }
 
 function isEnglist(word){
-  var english = /^[A-Za-z]/;
-  
+  var english = /^[A-Za-zāīūēō]/;
+
   for(var i=0;i<word.length;i++){
     if(!english.test(word[i])){
       console.log(word,'>>',false);

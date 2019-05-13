@@ -202,7 +202,7 @@
                 </div>
                 <div class="row ml-1 mb-2">
                     <input class="form-control col-sm-11" id="search-group" type="text" placeholder="Search Group" 
-                    onfocus="onSearchGroupList('list-group',1,this.value)"/>
+                    onfocus="onSearchGroupList('list-group',<?php echo $_SESSION['user-id']; ?>,this.value)"/>
 
                 </div>
                 <div id="list-group" class="list-group scrollbar-custom" style="height:197px;overflow-y:auto;">
