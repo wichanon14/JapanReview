@@ -38,3 +38,13 @@
 	background-color: #7b7b7b;
 }
 
+.font-review{
+	font-size:128px;
+}
+
+@media only screen and (max-width: 1024px) {
+	.font-review{
+		font-size:80px;
+	}
+}
+

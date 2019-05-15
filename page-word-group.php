@@ -131,7 +131,8 @@
         function addGroup(id){
             
             if(!checkExist(words,searchResult[id].japanese[0].word)){
-                //console.log(words);
+                console.log(words);
+                console.log(searchResult[id]);
                 AddToGroup(id,'number-word');
             }else{
                 $('#add_status').removeClass('hide');
@@ -186,7 +187,7 @@
     
     <?php require_once('header.php') ?>
 
-    <div class="container" style="margin-top:5em;">
+    <div class="container" style="margin-top:5em;margin-bottom:5em;">
         <div class="row">
             <div class="col-sm-5" style="margin-right:3em;">
                 <div class="mt-3">

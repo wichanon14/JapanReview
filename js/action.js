@@ -28,6 +28,7 @@ function deleteItem(array_data,data_id,result_id){
     });
 
     words = datas;
+    $('#number-word').text(words.length);
     $('#'+result_id).html(addGroupFormat(words));
 }
 

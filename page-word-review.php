@@ -54,13 +54,22 @@
             }
 
             function setMode(){
-                $('#input-review').addClass('hide');
-                $('#mode').removeClass('hide');
-                getMultiGroup(user_id,groupList);   
-                $('#wordStatus').attr('word_index',-1);
+                if(groupList.length>0){
+                    $('#input-review').addClass('hide');
+                    $('#mode').removeClass('hide');
+                    getMultiGroup(user_id,groupList);   
+                    $('#wordStatus').attr('word_index',-1);
+                }else{
+                    alert('Please Select Group');
+                }
+                
             }
 
             function selectAll(obj){
+                score=0;    
+                groupList = [];
+                groupSelect = '';
+                
                 if($(obj).attr('status')){
                     if($(obj).attr('status')==='true'){
                         $(obj).attr('status','false');
@@ -184,14 +193,20 @@
                     $('#answerResult').html(
                         '<div class="text-success">TRUE</div>'
                     );
+                    score += 1;
 
                     
                     setTimeout(function(){
                         if(word_index >= wordList.length-1){
-                            $('#input-review').removeClass('hide');
-                            $('#kan_hira').addClass('hide');
-                            $('#mode').addClass('hide');
-                            selectAll($('#selectAllBtn'));
+                            
+                            $('#question').html(score+'/'+wordList.length);
+                            setTimeout(function(){
+                                $('#input-review').removeClass('hide');
+                                selectAll($('#selectAllBtn'));
+                                selectAll($('#selectAllBtn'));
+                                $('#kan_hira').addClass('hide');
+                                $('#mode').addClass('hide');
+                            },1000);
                         }else{
                             goNext();
                             $('#answer').val('');
@@ -207,10 +222,22 @@
                         '<div class="text-danger">'+wordList[word_index].HIRAGANA+'</div>'
                     );
                     setTimeout(function(){
-                        goNext();
-                        $('#answerResult').html(
-                            'HIRAGANA'
-                        );
+                        if(word_index >= wordList.length-1){
+                            $('#question').html(score+'/'+wordList.length);
+                            setTimeout(function(){
+                                $('#input-review').removeClass('hide');
+                                selectAll($('#selectAllBtn'));
+                                selectAll($('#selectAllBtn'));
+                                $('#kan_hira').addClass('hide');
+                                $('#mode').addClass('hide');
+                            },1000);
+                        }else{
+                            goNext();
+                            $('#answer').val('');
+                            $('#answerResult').html(
+                                'HIRAGANA'
+                            );
+                        }
                     },1000);
                 }
 
@@ -290,7 +317,7 @@
                 <div class="row" >
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6 text-center">
-                        <div id="question" style="font-size:128px;">
+                        <div id="question" class="font-review">
                             Go!!
                         </div>
                         <div id="order">
@@ -298,14 +325,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mb-4">
+                <!--div class="row mb-4">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">
                         <button class="btn btn-dark btn-prev pull-left hide" onclick="goBack()">Back</button>
                         <button class="btn btn-dark btn-next pull-right hide" onclick="goNext()">Next</button>
                         
                     </div>
-                </div>
+                </div-->
                 <div class="row mb-4">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">

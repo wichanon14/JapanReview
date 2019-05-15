@@ -349,8 +349,8 @@ if ($conn->connect_error) {
 
             if(!$row['ID']){
                 
-                $sql = "INSERT INTO words(`KANJI`,`HIRAGANA`,`ROMANJI`,`MEANING`,`ADD_DATE`,`UPDATE_DATE`) 
-                    VALUES ('{$kanji}','{$hiragana}','{$romanji}','{$meaning}',NOW(),NOW())";
+                $sql = "INSERT INTO words(`KANJI`,`HIRAGANA`,`ROMANJI`,`MEANING`,`ADD_DATE`) 
+                    VALUES ('{$kanji}','{$hiragana}','{$romanji}','{$meaning}',NOW())";
 
                 if ($conn->query($sql) == TRUE) {
                     
