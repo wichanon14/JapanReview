@@ -602,6 +602,33 @@ if ($conn->connect_error) {
 
         }
 
+        if($action == 'get_point'){
+            
+            if(isset($_SESSION['user-id'])){
+                $user_id = $_SESSION['user-id'];
+            }else{
+                die();
+            }
+
+            if(isset($_POST['all_word'])){
+                $n = $_POST['all_word'];
+            }else{
+                die();
+            }
+
+            if(isset($_POST['correct_word'])){
+                $c = $_POST['correct_word'];
+            }else{
+                die();
+            }
+
+            $score = ($n / 10)*($c/$n)*100;
+
+            echo "{ \"msg\": \"".$score."\" }";
+
+            
+        }
+
     }else{
         
     } 

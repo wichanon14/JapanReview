@@ -180,6 +180,8 @@
                 $('#mode').addClass('hide');
                 $('#'+modeID).removeClass('hide');
                 $('#'+modeID).addClass('insert');
+                $('#question').html('Go!!');
+                $('#answer').attr('placeholder','');
                 setTimeout(function(){
                     showWord(0);
                 },1000);
@@ -189,58 +191,67 @@
             function checkResult(){
                 var word_index = parseInt($('#wordStatus').attr('word_index'));
                 
-                if($('#answer').val() === wordList[word_index].HIRAGANA){
-                    $('#answerResult').html(
-                        '<div class="text-success">TRUE</div>'
-                    );
-                    score += 1;
-
-                    
-                    setTimeout(function(){
-                        if(word_index >= wordList.length-1){
-                            
-                            $('#question').html(score+'/'+wordList.length);
-                            setTimeout(function(){
-                                $('#input-review').removeClass('hide');
-                                selectAll($('#selectAllBtn'));
-                                selectAll($('#selectAllBtn'));
-                                $('#kan_hira').addClass('hide');
-                                $('#mode').addClass('hide');
-                            },1000);
-                        }else{
-                            goNext();
-                            $('#answer').val('');
-                            $('#answerResult').html(
-                                'HIRAGANA'
-                            );
-                        }
-                        
-                    },500);
-
+                if(word_index >= wordList.length){
+                    BackToMain();
                 }else{
-                    $('#answerResult').html(
-                        '<div class="text-danger">'+wordList[word_index].HIRAGANA+'</div>'
-                    );
-                    setTimeout(function(){
-                        if(word_index >= wordList.length-1){
-                            $('#question').html(score+'/'+wordList.length);
-                            setTimeout(function(){
-                                $('#input-review').removeClass('hide');
-                                selectAll($('#selectAllBtn'));
-                                selectAll($('#selectAllBtn'));
-                                $('#kan_hira').addClass('hide');
-                                $('#mode').addClass('hide');
-                            },1000);
-                        }else{
-                            goNext();
-                            $('#answer').val('');
-                            $('#answerResult').html(
-                                'HIRAGANA'
-                            );
-                        }
-                    },1000);
+                    if($('#answer').val() === wordList[word_index].HIRAGANA){
+                        $('#answerResult').html(
+                            '<div class="text-success">TRUE</div>'
+                        );
+                        score += 1;
+
+                        
+                        setTimeout(function(){
+                            if(word_index >= wordList.length-1){
+                                $('#question').html(score+'/'+wordList.length);
+                                $('#answer').val('');
+                                $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                $('#answerResult').html('');
+                                $('#wordStatus').attr('word_index',word_index+1);
+                                $('#order').html('');
+                            }else{
+                                goNext();
+                                $('#answer').val('');
+                                $('#answerResult').html(
+                                    'HIRAGANA'
+                                );
+                            }
+                            
+                        },500);
+
+                    }else{
+                        $('#answerResult').html(
+                            '<div class="text-danger">'+wordList[word_index].HIRAGANA+'</div>'
+                        );
+                        setTimeout(function(){
+                            if(word_index >= wordList.length-1){
+                                $('#question').html(score+'/'+wordList.length);
+                                $('#answer').val('');
+                                $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                $('#answerResult').html('');
+                                $('#wordStatus').attr('word_index',word_index+1);
+                                $('#order').html('');
+                            }else{
+                                goNext();
+                                $('#answer').val('');
+                                $('#answerResult').html(
+                                    'HIRAGANA'
+                                );
+                            }
+                        },1000);
+                    }
                 }
 
+                
+
+            }
+
+            function BackToMain(){
+                $('#input-review').removeClass('hide');
+                selectAll($('#selectAllBtn'));
+                selectAll($('#selectAllBtn'));
+                $('#kan_hira').addClass('hide');
+                $('#mode').addClass('hide');
             }
 
             getGroupList('groupList',user_id,'');
@@ -292,7 +303,7 @@
                         </div>
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="pic_kanji" onclick="selectMode(this)"
-                            >PICTURE -> KANJI</button>
+                            disabled>PICTURE -> KANJI</button>
                         </div>
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
@@ -300,15 +311,27 @@
                         </div>
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_roma" onclick="selectMode(this)"
-                            >KANJI -> ROMANJI</button>
+                            disabled>KANJI -> ROMANJI</button>
                         </div>
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_mean" onclick="selectMode(this)"
-                            >KANJI -> MEANING</button>
+                            disabled>KANJI -> MEANING</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
+                            disabled>HIRAGANA / KATAKANA -> KANJI</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
+                            disabled>ROMANJI -> KANJI</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
+                            disabled>MEANING -> KANJI</button>
                         </div>
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="mix_type" onclick="selectMode(this)"
-                            >MIX TYPE</button>
+                            disabled>MIX TYPE</button>
                         </div>
                     </div>
                 </div>
