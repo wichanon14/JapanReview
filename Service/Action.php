@@ -604,10 +604,8 @@ if ($conn->connect_error) {
 
         if($action == 'get_point'){
             
-            if(isset($_SESSION['user-id'])){
+            if($_SESSION['user-id']){
                 $user_id = $_SESSION['user-id'];
-            }else{
-                die();
             }
 
             if(isset($_POST['all_word'])){
@@ -624,7 +622,20 @@ if ($conn->connect_error) {
 
             $score = ($n / 10)*($c/$n)*100;
 
-            echo "{ \"msg\": \"".$score."\" }";
+            $sql = "SELECT score FROM user_detail WHERE user_id = {$user_id}";
+            $result = $conn->query($sql);
+
+            if($result && $user_id){                
+                $row = $result->fetch_assoc();
+                $new_score = $row['score']+$score;
+
+                $sql = "UPDATE user_detail SET score = {$new_score} WHERE user_id = {$user_id}";
+                $result = $conn->query($sql);
+
+                echo "{ \"msg\": \"".$new_score."\" }";
+            }
+
+            
 
             
         }

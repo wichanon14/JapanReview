@@ -209,6 +209,7 @@
                                 $('#answerResult').html('');
                                 $('#wordStatus').attr('word_index',word_index+1);
                                 $('#order').html('');
+                                addscore(wordList.length,score);
                             }else{
                                 goNext();
                                 $('#answer').val('');
@@ -231,6 +232,7 @@
                                 $('#answerResult').html('');
                                 $('#wordStatus').attr('word_index',word_index+1);
                                 $('#order').html('');
+                                addscore(wordList.length,score);
                             }else{
                                 goNext();
                                 $('#answer').val('');

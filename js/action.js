@@ -738,3 +738,21 @@ function signin(){
     window.location.href="./page-home.php";
   });
 }
+
+function addscore(all_word,correct_word){
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "/JapanReview/Service/Action.php",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+    },
+    "processData": false,
+    "data": "{    \"action\": \"get_point\",    \"all_word\":"+all_word+",    \"correct_word\":"+correct_word+"}"
+  }
+  
+  $.ajax(settings).done(function (response) {
+    console.log(response);
+  });
+}
