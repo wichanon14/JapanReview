@@ -19,6 +19,9 @@
             var wordList = [];
             var user_id = '<?php echo $_SESSION['user-id']; ?>';
             var score = 0;
+            var mode="";
+            var label="";
+            var modeMix="";
 
             function onSelectGroup(obj){
                 var group_id = $(obj).attr('data-id');
@@ -136,8 +139,63 @@
                 return result_randomGroup;
             }
 
+            function RandomMode(){
+                
+                var r = parseInt(Math.random()*100)%4;
+                var result_random_mode;
+
+                switch(r){
+                    case 0: result_random_mode = "kan_hira"; break;
+                    case 1: result_random_mode = "kan_mean"; break;
+                    case 2: result_random_mode = "hira_kan"; break;
+                    case 3: result_random_mode = "mean_kan"; break;
+                    default : break;
+                }
+                
+                return result_random_mode;
+            }
+
             function showWord(index){
-                $('#question').html(wordList[index].KANJI);
+                switch(mode){
+                    case "kan_hira" : $('#question').html(wordList[index].KANJI);
+                                    label = "HIRAGANA";
+                                    $('#answerResult').html(label);
+                                    break;
+                    case "kan_mean" : $('#question').html(wordList[index].KANJI); 
+                                    label = "MEANING";
+                                    $('#answerResult').html(label);
+                                    break;
+                    case "hira_kan" : $('#question').html(wordList[index].HIRAGANA); 
+                                    label = "KANJI";
+                                    $('#answerResult').html(label);
+                                    break;                
+                    case "mean_kan" : $('#question').html(wordList[index].MEANING); 
+                                    label = "KANJI";
+                                    $('#answerResult').html(label);
+                                    break;        
+                    case "mix_type" : 
+                                    modeMix = RandomMode();
+                                    if(modeMix === "kan_hira"){
+                                        $('#question').html(wordList[index].KANJI); 
+                                        label = "HIRAGANA";
+                                    }
+                                    if(modeMix === "kan_mean"){
+                                        $('#question').html(wordList[index].KANJI); 
+                                        label = "MEANING";
+                                    }
+                                    if(modeMix === "hira_kan"){
+                                        $('#question').html(wordList[index].HIRAGANA); 
+                                        label = "KANJI";
+                                    }
+                                    if(modeMix === "mean_kan"){
+                                        $('#question').html(wordList[index].MEANING); 
+                                        label = "KANJI";
+                                    }
+                                    $('#answerResult').html(label);
+                                    break;                            
+                    default : break;
+                }
+                
                 $('#order').html(index+1+"/"+wordList.length);
                 $('#wordStatus').attr('word_index',index);
 
@@ -177,9 +235,10 @@
 
             function selectMode(obj){
                 var modeID = $(obj).attr('mode');
+                mode = modeID;
                 $('#mode').addClass('hide');
-                $('#'+modeID).removeClass('hide');
-                $('#'+modeID).addClass('insert');
+                $('#practice_block').removeClass('hide');
+                $('#practice_block').addClass('insert');
                 $('#question').html('Go!!');
                 $('#answer').attr('placeholder','');
                 setTimeout(function(){
@@ -194,54 +253,313 @@
                 if(word_index >= wordList.length){
                     BackToMain();
                 }else{
-                    if($('#answer').val() === wordList[word_index].HIRAGANA){
-                        $('#answerResult').html(
-                            '<div class="text-success">TRUE</div>'
-                        );
-                        score += 1;
 
-                        
-                        setTimeout(function(){
-                            if(word_index >= wordList.length-1){
-                                $('#question').html(score+'/'+wordList.length);
-                                $('#answer').val('');
-                                $('#answer').attr('placeholder','Press Enter For Finish Practice');
-                                $('#answerResult').html('');
-                                $('#wordStatus').attr('word_index',word_index+1);
-                                $('#order').html('');
-                                addscore(wordList.length,score);
-                            }else{
-                                goNext();
-                                $('#answer').val('');
-                                $('#answerResult').html(
-                                    'HIRAGANA'
-                                );
-                            }
+                    if(mode==="kan_hira"){
+                        if($('#answer').val() === wordList[word_index].HIRAGANA){
+                            $('#answerResult').html(
+                                '<div class="text-success">TRUE</div>'
+                            );
+                            score += 1;
+
                             
-                        },500);
+                            setTimeout(function(){
+                                if(word_index >= wordList.length-1){
+                                    $('#question').html(score+'/'+wordList.length);
+                                    $('#answer').val('');
+                                    $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                    $('#answerResult').html('');
+                                    $('#wordStatus').attr('word_index',word_index+1);
+                                    $('#order').html('');
+                                    addscore(wordList.length,score);
+                                }else{
+                                    goNext();
+                                    $('#answer').val('');
+                                    $('#answerResult').html(
+                                        label
+                                    );
+                                }
+                                
+                            },500);
 
-                    }else{
-                        $('#answerResult').html(
-                            '<div class="text-danger">'+wordList[word_index].HIRAGANA+'</div>'
-                        );
-                        setTimeout(function(){
-                            if(word_index >= wordList.length-1){
-                                $('#question').html(score+'/'+wordList.length);
-                                $('#answer').val('');
-                                $('#answer').attr('placeholder','Press Enter For Finish Practice');
-                                $('#answerResult').html('');
-                                $('#wordStatus').attr('word_index',word_index+1);
-                                $('#order').html('');
-                                addscore(wordList.length,score);
-                            }else{
-                                goNext();
-                                $('#answer').val('');
-                                $('#answerResult').html(
-                                    'HIRAGANA'
-                                );
-                            }
-                        },1000);
+                        }else{
+                            $('#answerResult').html(
+                                '<div class="text-danger">'+wordList[word_index].HIRAGANA+'</div>'
+                            );
+                            setTimeout(function(){
+                                if(word_index >= wordList.length-1){
+                                    $('#question').html(score+'/'+wordList.length);
+                                    $('#answer').val('');
+                                    $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                    $('#answerResult').html('');
+                                    $('#wordStatus').attr('word_index',word_index+1);
+                                    $('#order').html('');
+                                    addscore(wordList.length,score);
+                                }else{
+                                    goNext();
+                                    $('#answer').val('');
+                                    $('#answerResult').html(
+                                        label
+                                    );
+                                }
+                            },1000);
+                        }
                     }
+
+                    if(mode==="kan_mean"){
+                        if($('#answer').val().toLowerCase() === wordList[word_index].MEANING.toLowerCase()){
+                            $('#answerResult').html(
+                                '<div class="text-success">TRUE</div>'
+                            );
+                            score += 1;
+
+                            
+                            setTimeout(function(){
+                                if(word_index >= wordList.length-1){
+                                    $('#question').html(score+'/'+wordList.length);
+                                    $('#answer').val('');
+                                    $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                    $('#answerResult').html('');
+                                    $('#wordStatus').attr('word_index',word_index+1);
+                                    $('#order').html('');
+                                    addscore(wordList.length,score);
+                                }else{
+                                    goNext();
+                                    $('#answer').val('');
+                                    $('#answerResult').html(
+                                        label
+                                    );
+                                }
+                                
+                            },500);
+
+                        }else{
+                            $('#answerResult').html(
+                                '<div class="text-danger">'+wordList[word_index].MEANING+'</div>'
+                            );
+                            setTimeout(function(){
+                                if(word_index >= wordList.length-1){
+                                    $('#question').html(score+'/'+wordList.length);
+                                    $('#answer').val('');
+                                    $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                    $('#answerResult').html('');
+                                    $('#wordStatus').attr('word_index',word_index+1);
+                                    $('#order').html('');
+                                    addscore(wordList.length,score);
+                                }else{
+                                    goNext();
+                                    $('#answer').val('');
+                                    $('#answerResult').html(
+                                        label
+                                    );
+                                }
+                            },1000);
+                        }
+                    }
+                
+                    if(mode==="hira_kan"||mode==="mean_kan"){
+                        if($('#answer').val() === wordList[word_index].KANJI){
+                            $('#answerResult').html(
+                                '<div class="text-success">TRUE</div>'
+                            );
+                            score += 1;
+
+                            
+                            setTimeout(function(){
+                                if(word_index >= wordList.length-1){
+                                    $('#question').html(score+'/'+wordList.length);
+                                    $('#answer').val('');
+                                    $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                    $('#answerResult').html('');
+                                    $('#wordStatus').attr('word_index',word_index+1);
+                                    $('#order').html('');
+                                    addscore(wordList.length,score);
+                                }else{
+                                    goNext();
+                                    $('#answer').val('');
+                                    $('#answerResult').html(
+                                        label
+                                    );
+                                }
+                                
+                            },500);
+
+                        }else{
+                            $('#answerResult').html(
+                                '<div class="text-danger">'+wordList[word_index].KANJI+'</div>'
+                            );
+                            setTimeout(function(){
+                                if(word_index >= wordList.length-1){
+                                    $('#question').html(score+'/'+wordList.length);
+                                    $('#answer').val('');
+                                    $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                    $('#answerResult').html('');
+                                    $('#wordStatus').attr('word_index',word_index+1);
+                                    $('#order').html('');
+                                    addscore(wordList.length,score);
+                                }else{
+                                    goNext();
+                                    $('#answer').val('');
+                                    $('#answerResult').html(
+                                        label
+                                    );
+                                }
+                            },1000);
+                        }
+                    }
+                
+                    if(mode==="mix_type"){
+                        if(modeMix === "kan_hira"){
+                            if($('#answer').val() === wordList[word_index].HIRAGANA){
+                                $('#answerResult').html(
+                                    '<div class="text-success">TRUE</div>'
+                                );
+                                score += 1;
+
+                                
+                                setTimeout(function(){
+                                    if(word_index >= wordList.length-1){
+                                        $('#question').html(score+'/'+wordList.length);
+                                        $('#answer').val('');
+                                        $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                        $('#answerResult').html('');
+                                        $('#wordStatus').attr('word_index',word_index+1);
+                                        $('#order').html('');
+                                        addscore(wordList.length,score);
+                                    }else{
+                                        goNext();
+                                        $('#answer').val('');
+                                        $('#answerResult').html(
+                                            label
+                                        );
+                                    }
+                                    
+                                },500);
+
+                            }else{
+                                $('#answerResult').html(
+                                    '<div class="text-danger">'+wordList[word_index].HIRAGANA+'</div>'
+                                );
+                                setTimeout(function(){
+                                    if(word_index >= wordList.length-1){
+                                        $('#question').html(score+'/'+wordList.length);
+                                        $('#answer').val('');
+                                        $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                        $('#answerResult').html('');
+                                        $('#wordStatus').attr('word_index',word_index+1);
+                                        $('#order').html('');
+                                        addscore(wordList.length,score);
+                                    }else{
+                                        goNext();
+                                        $('#answer').val('');
+                                        $('#answerResult').html(
+                                            label
+                                        );
+                                    }
+                                },1000);
+                            }
+                        }
+                        if(modeMix === "kan_mean"){
+                            if($('#answer').val().toLowerCase() === wordList[word_index].MEANING.toLowerCase()){
+                                $('#answerResult').html(
+                                    '<div class="text-success">TRUE</div>'
+                                );
+                                score += 1;
+
+                                
+                                setTimeout(function(){
+                                    if(word_index >= wordList.length-1){
+                                        $('#question').html(score+'/'+wordList.length);
+                                        $('#answer').val('');
+                                        $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                        $('#answerResult').html('');
+                                        $('#wordStatus').attr('word_index',word_index+1);
+                                        $('#order').html('');
+                                        addscore(wordList.length,score);
+                                    }else{
+                                        goNext();
+                                        $('#answer').val('');
+                                        $('#answerResult').html(
+                                            label
+                                        );
+                                    }
+                                    
+                                },500);
+
+                            }else{
+                                $('#answerResult').html(
+                                    '<div class="text-danger">'+wordList[word_index].MEANING+'</div>'
+                                );
+                                setTimeout(function(){
+                                    if(word_index >= wordList.length-1){
+                                        $('#question').html(score+'/'+wordList.length);
+                                        $('#answer').val('');
+                                        $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                        $('#answerResult').html('');
+                                        $('#wordStatus').attr('word_index',word_index+1);
+                                        $('#order').html('');
+                                        addscore(wordList.length,score);
+                                    }else{
+                                        goNext();
+                                        $('#answer').val('');
+                                        $('#answerResult').html(
+                                            label
+                                        );
+                                    }
+                                },1000);
+                            }
+                        }
+                        if(modeMix === "hira_kan"||modeMix === "mean_kan"){
+                            if($('#answer').val() === wordList[word_index].KANJI){
+                                $('#answerResult').html(
+                                    '<div class="text-success">TRUE</div>'
+                                );
+                                score += 1;
+
+                                
+                                setTimeout(function(){
+                                    if(word_index >= wordList.length-1){
+                                        $('#question').html(score+'/'+wordList.length);
+                                        $('#answer').val('');
+                                        $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                        $('#answerResult').html('');
+                                        $('#wordStatus').attr('word_index',word_index+1);
+                                        $('#order').html('');
+                                        addscore(wordList.length,score);
+                                    }else{
+                                        goNext();
+                                        $('#answer').val('');
+                                        $('#answerResult').html(
+                                            label
+                                        );
+                                    }
+                                    
+                                },500);
+
+                            }else{
+                                $('#answerResult').html(
+                                    '<div class="text-danger">'+wordList[word_index].KANJI+'</div>'
+                                );
+                                setTimeout(function(){
+                                    if(word_index >= wordList.length-1){
+                                        $('#question').html(score+'/'+wordList.length);
+                                        $('#answer').val('');
+                                        $('#answer').attr('placeholder','Press Enter For Finish Practice');
+                                        $('#answerResult').html('');
+                                        $('#wordStatus').attr('word_index',word_index+1);
+                                        $('#order').html('');
+                                        addscore(wordList.length,score);
+                                    }else{
+                                        goNext();
+                                        $('#answer').val('');
+                                        $('#answerResult').html(
+                                            label
+                                        );
+                                    }
+                                },1000);
+                            }
+                        }
+                    }
+                
                 }
 
                 
@@ -252,7 +570,7 @@
                 $('#input-review').removeClass('hide');
                 selectAll($('#selectAllBtn'));
                 selectAll($('#selectAllBtn'));
-                $('#kan_hira').addClass('hide');
+                $('#practice_block').addClass('hide');
                 $('#mode').addClass('hide');
             }
 
@@ -294,7 +612,7 @@
                 </div>
                 
             </div>
-            <div class=" hide" id="mode">
+            <div class="hide" id="mode">
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6 text-center">
@@ -303,42 +621,42 @@
                                 <span>SELECT YOUR MODE</span>
                             </h2>
                         </div>
-                        <div>
+                        <!--div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="pic_kanji" onclick="selectMode(this)"
                             disabled>PICTURE -> KANJI</button>
-                        </div>
+                        </div-->
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
                             >KANJI -> HIRAGANA / KATAKANA</button>
                         </div>
-                        <div>
+                        <!--div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_roma" onclick="selectMode(this)"
                             disabled>KANJI -> ROMANJI</button>
-                        </div>
+                        </div-->
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_mean" onclick="selectMode(this)"
-                            disabled>KANJI -> MEANING</button>
+                            >KANJI -> MEANING</button>
                         </div>
                         <div>
-                            <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
-                            disabled>HIRAGANA / KATAKANA -> KANJI</button>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="hira_kan" onclick="selectMode(this)"
+                            >HIRAGANA / KATAKANA -> KANJI</button>
                         </div>
-                        <div>
+                        <!--div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
                             disabled>ROMANJI -> KANJI</button>
-                        </div>
+                        </div-->
                         <div>
-                            <button class="btn btn-dark col-sm-10 mb-2" mode="kan_hira" onclick="selectMode(this)"
-                            disabled>MEANING -> KANJI</button>
+                            <button class="btn btn-dark col-sm-10 mb-2" mode="mean_kan" onclick="selectMode(this)"
+                            >MEANING -> KANJI</button>
                         </div>
                         <div>
                             <button class="btn btn-dark col-sm-10 mb-2" mode="mix_type" onclick="selectMode(this)"
-                            disabled>MIX TYPE</button>
+                            >MIX TYPE</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="hide" id="kan_hira">    
+            <div class="hide" id="practice_block">    
                 <div class="row" >
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6 text-center">
