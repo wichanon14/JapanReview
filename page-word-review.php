@@ -158,18 +158,22 @@
             function showWord(index){
                 switch(mode){
                     case "kan_hira" : $('#question').html(wordList[index].KANJI);
+                                    fontAdapt(wordList[index].KANJI);
                                     label = "HIRAGANA";
                                     $('#answerResult').html(label);
                                     break;
                     case "kan_mean" : $('#question').html(wordList[index].KANJI); 
+                                    fontAdapt(wordList[index].KANJI);
                                     label = "MEANING";
                                     $('#answerResult').html(label);
                                     break;
                     case "hira_kan" : $('#question').html(wordList[index].HIRAGANA); 
+                                    fontAdapt(wordList[index].HIRAGANA);
                                     label = "KANJI";
                                     $('#answerResult').html(label);
                                     break;                
                     case "mean_kan" : $('#question').html(wordList[index].MEANING); 
+                                    fontAdapt(wordList[index].MEANING);                    
                                     label = "KANJI";
                                     $('#answerResult').html(label);
                                     break;        
@@ -177,18 +181,22 @@
                                     modeMix = RandomMode();
                                     if(modeMix === "kan_hira"){
                                         $('#question').html(wordList[index].KANJI); 
+                                        fontAdapt(wordList[index].KANJI);        
                                         label = "HIRAGANA";
                                     }
                                     if(modeMix === "kan_mean"){
                                         $('#question').html(wordList[index].KANJI); 
+                                        fontAdapt(wordList[index].KANJI);    
                                         label = "MEANING";
                                     }
                                     if(modeMix === "hira_kan"){
                                         $('#question').html(wordList[index].HIRAGANA); 
+                                        fontAdapt(wordList[index].HIRAGANA);    
                                         label = "KANJI";
                                     }
                                     if(modeMix === "mean_kan"){
-                                        $('#question').html(wordList[index].MEANING); 
+                                        $('#question').html(wordList[index].MEANING);  
+                                        fontAdapt(wordList[index].MEANING);    
                                         label = "KANJI";
                                     }
                                     $('#answerResult').html(label);
@@ -565,6 +573,19 @@
                 
 
             }
+
+            function fontAdapt(data){
+                
+                var fontSize=0;
+                if(screen.width>1024){
+                    fontSize = (-15.25)*data.length+176;
+                }else{
+                    fontSize = (-8.8)*data.length+98;                    
+                }
+                
+                $('.font-review').css('font-size',fontSize+'px');
+            }
+
 
             function BackToMain(){
                 $('#input-review').removeClass('hide');
