@@ -143,7 +143,7 @@ if ($conn->connect_error) {
         if($action == "addGroup"){
 
             if(isset($_POST['user_id'])){
-                $user_id = $_POST['user_id'];
+                $user_id = $_SESSION['user_id'];
             }else{
                 die("Variable not set");
             }
@@ -212,7 +212,7 @@ if ($conn->connect_error) {
                     recordLogs($conn,$user_id,'add Group >> '.$group_id);
                     mysqli_free_result($result);
                 }else{
-                    echo '{"msg":"Save Empty Group"}';
+                    echo '{"msg":"Save Empty Group "}';
                     recordLogs($conn,$user_id,'add Empty Group >> '.$group_id);
                 }
                 
@@ -368,7 +368,7 @@ if ($conn->connect_error) {
                     $_SESSION['add_result'] = "incomplete";
                     
                     echo '{ "msg":"add fail" }';
-                    recordLogs($conn,$user_id,'Add Word Fail');
+                    recordLogs($conn,$user_id,"{$sql}");
                 }
 
             }else {

@@ -297,13 +297,46 @@ function AddWord(id){
           "Content-Type": "application/json"
         },
         "processData": false,
-        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+searchResult[id].senses[0].english_definitions[0]+"\",\"user_id\":\""+user_id+"\"}"
+        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+replaceQuote(searchResult[id].senses[0].english_definitions[0])+"\",\"user_id\":\""+user_id+"\"}"
       }
       
       $.ajax(settings).done(function (response) {
         console.log(response);
         $('li')[id+1].innerHTML = '<span>'.concat(searchResult[id].japanese[0].word,' (',searchResult[id].japanese[0].reading,')</span>');
       });
+}
+
+function AddWordByForm(word,hiragana,romanji,meaning){
+  word = $('#add_kanji').val();
+  hiragana = $('#add_hira').val();
+  romanji = $('#add_roman').val();
+  meaning = $('#add_meaning').val();
+  var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "/JapanReview/Service/Action.php",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "processData": false,
+      "data": "{\"action\":\"AddingWord\",\"kanji\":\""+word+"\",\"hiragana\":\""+hiragana+"\",\"romanji\":\""+romanji+"\",\"meaning\":\""+meaning+"\",\"user_id\":\""+user_id+"\"}"
+    }
+    
+    $.ajax(settings).done(function (response) {
+      console.log(response);
+      if(response.ID){
+        var data = {
+          data_id: response.ID,
+          word: word
+        }
+        words.splice(0, 0, data);
+        updatelist();
+        $('#words').html(addGroupFormat(words));
+        $('#number-word').text(words.length);
+      }
+      
+    });
 }
 
 function AddToGroup(id,number_result_id){
@@ -316,7 +349,7 @@ function AddToGroup(id,number_result_id){
           "Content-Type": "application/json"
         },
         "processData": false,
-        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+searchResult[id].senses[0].english_definitions[0]+"\",\"user_id\":\""+user_id+"\"}"
+        "data": "{\"action\":\"AddingWord\",\"kanji\":\""+searchResult[id].japanese[0].word+"\",\"hiragana\":\""+searchResult[id].japanese[0].reading+"\",\"romanji\":\""+toRomanji(searchResult[id].japanese[0].reading)+"\",\"meaning\":\""+replaceQuote(searchResult[id].senses[0].english_definitions[0])+"\",\"user_id\":\""+user_id+"\"}"
       }
       
       $.ajax(settings).done(function (response) {
@@ -330,6 +363,23 @@ function AddToGroup(id,number_result_id){
         $('#words').html(addGroupFormat(words));
         $('#'+number_result_id).text(words.length);
       });
+}
+
+function replaceQuote(oldString){
+  
+  for(var i=0;i<oldString.length;i++){
+
+    if(oldString[i]==="'" || oldString[i]==='\"'){
+      var font = oldString.substr(0,i-0);
+      var back = oldString.substr(i+1);
+      oldString = font+"_"+back;
+      i++;
+    }
+  }
+  
+  console.log(oldString);
+
+  return oldString;
 }
 
 function isEnglist(word){

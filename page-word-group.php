@@ -22,6 +22,7 @@
         var resultGateway;
         getAllWord(null,'existData');
         var searchResult=[];
+
         function searchFromAPI(obj){
             showLoading();
             resultGateway=true;
@@ -44,10 +45,10 @@
                         ' class="text-dark font-large fa fa-plus clickable" onclick="addGroup(',i,')"></i></span>');
                          
                         if(checkExist(words,searchResult[i].japanese[0].word)){
-                            defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">'.concat(
+                            defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit" data-id="'+i+'">'.concat(
                             searchResult[i].japanese[0].word,' (',searchResult[i].japanese[0].reading,')</li>');
                         }else{
-                            defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit">'.concat(
+                            defaultLabel += '<li class="insert list-group-item d-flex justify-content-between align-items-center font-kanit" data-id="'+i+'">'.concat(
                             searchResult[i].japanese[0].word,' (',searchResult[i].japanese[0].reading,')',addCase,'</li>');
                         }
 
@@ -57,6 +58,34 @@
                 }
                 $('#result-words-search').css('background','');
                 $('#result-words-search').html(defaultLabel);
+
+                var popupAction;
+                $('.insert').on('touchstart',function(){
+                    var word_id = parseInt($(this).attr('data-id'));
+                    $('#add_kanji').val(searchResult[word_id].japanese[0].word);
+                    $('#add_hira').val(searchResult[word_id].japanese[0].reading);
+                    $('#add_roman').val(toRomanji(searchResult[word_id].japanese[0].reading));
+                    $('#add_meaning').val(searchResult[word_id].senses[0].english_definitions[0]);
+                    popupAction =  setTimeout(function(){
+                        $('#myModal').modal('show');
+                            },500);
+                }).on('touchend',function(){
+                    clearTimeout(popupAction);
+                });
+
+                $('.insert').on('mousedown',function(){
+                    var word_id = parseInt($(this).attr('data-id'));
+                    $('#add_kanji').val(searchResult[word_id].japanese[0].word);
+                    $('#add_hira').val(searchResult[word_id].japanese[0].reading);
+                    $('#add_roman').val(toRomanji(searchResult[word_id].japanese[0].reading));
+                    $('#add_meaning').val(searchResult[word_id].senses[0].english_definitions[0]);
+                    popupAction =  setTimeout(function(){
+                        $('#myModal').modal('show');
+                            },500);
+                }).on('mouseup',function(){
+                    clearTimeout(popupAction);
+                });
+
                 //console.log(response.data[0].japanese[0].word);
             }
             request.send();
@@ -180,14 +209,52 @@
             $('#result-words-search').html(template);
         }
 
+        function addNewWord(){
+            $('#add_kanji').val('');
+            $('#add_hira').val('');
+            $('#add_roman').val('');
+            $('#add_meaning').val('');
+            $('#myModal').modal('show');
+        }
+
         getGroupList('list-group',user_id,'');
-        
+
         
     </script>
     
     <?php require_once('header.php') ?>
 
     <div class="container" style="margin-top:5em;margin-bottom:5em;">
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Word Detail</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Some text in the modal.</p>
+                    <h5>KANJI</h5>
+                    <input id="add_kanji" class="form-control col-sm-8 mb-2" type="text" placeholder="KANJI" />
+                    <h5>HIRAGANA / KATAKANA</h5>
+                    <input id="add_hira" class="form-control col-sm-8 mb-2" type="text" placeholder="HIRAGANA" />
+                    <h5>ROMANJI</h5>
+                    <input id="add_roman" class="form-control col-sm-8 mb-2" type="text" placeholder="ROMANJI" />
+                    <h5>MEANING</h5>
+                    <input id="add_meaning" class="form-control col-sm-8 mb-2" type="text" placeholder="MEANING" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="AddWordByForm()">ADD</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                </div>
+
+            </div>
+        </div>
+
+
         <div class="row">
             <div class="col-sm-5" style="margin-right:3em;">
                 <div class="mt-3">
@@ -216,7 +283,9 @@
             </div>
             <div id="group-manage-addword" class="col-sm-6 mt-3 hide" >
                 <div class="row  ml-1">
-                    <h2>Word Grouping</h2>
+                    <h2>Word Grouping
+                        <i class="text-dark font-large fa fa-plus clickable" onclick="addNewWord()"></i>
+                    </h2>
                     <div class="text-danger ml-3 mt-2 hide font-weight-bold" id="add_status">
                         <span >You had alread added.</span>
                     </div>
