@@ -401,7 +401,7 @@ function toRomanji(japaneseWord){
       
     while(!isEnglist(word)){
       word = word.replace(/ん/g, "n");
-      word = word.replace(/はっ/g,"has");
+      
       word = word.replace(/きゃ/g, "kya");
       word = word.replace(/きゅ/g, "kyu");
       word = word.replace(/きょ/g, "kyo");
@@ -647,12 +647,25 @@ function toRomanji(japaneseWord){
       word = word.replace(/ッf/g, "ff");
       word = word.replace(/ッj/g, "jj");
       word = word.replace(/ッ/g, "\!");
+
+      word = word.replace(/っk/g, "kk");
+      word = word.replace(/っs/g, "ss");
+      word = word.replace(/っt/g, "tt");
+      word = word.replace(/っn/g, "nn");
+      word = word.replace(/っm/g, "mm");
+      word = word.replace(/っr/g, "rr");
+      word = word.replace(/っg/g, "gg");
+      word = word.replace(/っd/g, "dd");
+      word = word.replace(/っb/g, "bb");
+      word = word.replace(/っp/g, "pp");
+      word = word.replace(/っf/g, "ff");
+      word = word.replace(/っj/g, "jj");
+
       word = word.replace(/oー/g, "ō");
       word = word.replace(/uー/g, "ū");
       word = word.replace(/aー/g, "ā");
       word = word.replace(/iー/g, "ī");
       word = word.replace(/eー/g, "ē");
-
 
     }
 
