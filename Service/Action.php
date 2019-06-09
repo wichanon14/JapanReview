@@ -142,11 +142,7 @@ if ($conn->connect_error) {
 
         if($action == "addGroup"){
 
-            if(isset($_POST['user_id'])){
-                $user_id = $_SESSION['user_id'];
-            }else{
-                die("Variable not set");
-            }
+            $user_id = $_SESSION['user-id'];
 
             if(isset($_POST['group'])){
                 $group = $_POST['group'];

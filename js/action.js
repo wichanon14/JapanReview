@@ -201,6 +201,9 @@ function getGroupList(id,user_id,keyword){
                     $(item).addClass('active');
                     
                 }
+                if($('#group-name').text()===response[i].group_name){
+                  $('#save-btn').attr('group-id',response[i].ID);
+                }
             }
       });
 }

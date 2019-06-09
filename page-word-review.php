@@ -580,7 +580,7 @@
                 if(screen.width>1024){
                     fontSize = (-15.25)*data.length+176;
                 }else{
-                    fontSize = (-8.8)*data.length+98;                    
+                    fontSize = 54;                    
                 }
                 
                 $('.font-review').css('font-size',fontSize+'px');
